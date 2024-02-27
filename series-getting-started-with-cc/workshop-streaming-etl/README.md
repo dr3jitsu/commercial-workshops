@@ -81,7 +81,7 @@ An environment contains Confluent clusters and its deployed components such as C
 
     * Click **Begin Configuration**.
 
-    * Choose **GCP** as your Cloud Provider and your preferred Region.
+    * Choose **GCP** as your Cloud Provider and your preferred Region ( Jakarta Region- asia-southeast2).
         > **Note:** GCP is required as your Cloud Provider since you will be utilizing the fully-managed BigQuery sink connector for this workshop
 
     * Specify a meaningful **Cluster Name** and then review the associated *Configuration & Cost*, *Usage Limits*, and *Uptime SLA* before clicking **Launch Cluster**.
@@ -98,7 +98,7 @@ You will be exploring Confluent Cloud Schema Registry in more detail towards the
 
 1. Return to your environment by clicking on the Confluent icon at the top left corner and then clicking your environment tile.
 
-1. Click on **Schema Registry**. Select your cloud provider and region, and then click on **Enable Schema Registry**.
+1. Click on **Schema Registry**. Select your cloud provider and region (GCP and Australia Region), and then click on **Enable Schema Registry**.
 
 ***
 
@@ -159,7 +159,7 @@ The next step is to source data from mongoDB using the [fully-managed mongoDB At
 | `Name`      | MongoDbAtlasSourceConnector |
 | `Kafka API Key`              | From step 6                 |
 | `Kafka API Secret`           | From step 6              |
-| `Connection host`    | Will be provided during workshop            |
+| `Connection host`    | abc.r3iy3qr.mongodb.net            |
 | `Connection user` | dbUser               |
 | `Connection password`    | MONGODB_PW             |
 | `Database name`    | abc           |
