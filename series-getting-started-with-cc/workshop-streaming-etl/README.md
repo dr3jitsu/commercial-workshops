@@ -356,8 +356,8 @@ The next step is to sink data from Confluent Cloud into BigQuery using the [full
 | `Kafka API Key`    | From step 6           |
 | `Kafka API Secret` | From step 6              |
 | `GCP credentials file`    | Upload_your_GCP_Credentials_file            |
-| `Project ID`    | Will be provided during workshop          |
-| `Dataset`    | Will be provided during workshop          |
+| `Project ID`    | sales-engineering-XXXXXX          |
+| `Dataset`    | bq_id_2024          |
 | `Auto create tables`    | True          |
 | `Tasks`    | 1             |
 
