@@ -1,0 +1,14 @@
+[default]
+bootstrap.servers=pkc-ew3qg.asia-southeast2.gcp.confluent.cloud:9092
+security.protocol=SASL_SSL
+sasl.mechanisms=PLAIN
+sasl.username=BGXPTV4BQH4CAKMZ
+sasl.password=YdXxcWDzXt2gXHDPMHzsUN3RfGnnlGWlKSqOz72Rg33vOCBOE8auQh6VTITEcF+Z
+
+[consumer]
+group.id=python_example_group_1
+
+# 'auto.offset.reset=earliest' to start reading from the beginning of
+# the topic if no committed offsets exist.
+auto.offset.reset=earliest
+
