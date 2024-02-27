@@ -1,9 +1,9 @@
 [default]
-bootstrap.servers=pkc-ew3qg.asia-southeast2.gcp.confluent.cloud:9092
+bootstrap.servers={REPLACE THIS xxx.xxxx.gcp.confluent.cloud:9092}
 security.protocol=SASL_SSL
 sasl.mechanisms=PLAIN
-sasl.username=BGXPTV4BQH4CAKMZ
-sasl.password=YdXxcWDzXt2gXHDPMHzsUN3RfGnnlGWlKSqOz72Rg33vOCBOE8auQh6VTITEcF+Z
+sasl.username={REPLACE THIS}
+sasl.password={REPLACE THIS}
 
 [consumer]
 group.id=python_example_group_1
