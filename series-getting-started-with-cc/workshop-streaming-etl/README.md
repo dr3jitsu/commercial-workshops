@@ -377,9 +377,29 @@ The next step is to sink data from Confluent Cloud into BigQuery using the [full
 
 Consume Data from topic abc.clicks.
 
-1. Change the conf file ( Bootstrap server, API KEY, API Secret)
+1. Create a new directory anywhere you'd like for this project:
 
-2. Run the app
+```SQL
+mkdir kafka-python-consume && cd kafka-python-consume
+```
+   
+2. Create and activate a Python virtual environment to give yourself a clean, isolated workspace:
+
+```SQL
+virtualenv env
+
+source env/bin/activate
+```
+
+3.Install the Kafka library:
+
+```SQL
+pip install confluent-kafka
+```
+
+4. Change the [conf file](https://github.com/dr3jitsu/commercial-workshops/blob/master/series-getting-started-with-cc/workshop-streaming-etl/conf) ( Bootstrap server, API KEY, API Secret)
+
+5. Run the app
 
 ```SQL
 chmod u+x consumer.py
@@ -387,7 +407,6 @@ chmod u+x consumer.py
 ./consumer.py conf
 ```
   
-
 ***
 
 ## <a name="step-13"></a>Step 13: Clean Up Resources
