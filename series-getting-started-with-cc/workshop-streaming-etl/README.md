@@ -17,7 +17,8 @@
 1. [Create Streams and Tables using ksqlDB](#step-9)
 1. [Stream Processing with ksqlDB](#step-10)
 1. [Connect BigQuery sink to Confluent Cloud](#step-11)
-1. [Clean Up Resources](#step-11)
+1. [Consume Data from a topic ( Python App)](#step-12)
+1. [Clean Up Resources](#step-13)
 1. [Confluent Resources and Further Testing](#confluent-resources-and-further-testing)
 
 ***
@@ -370,11 +371,26 @@ The next step is to sink data from Confluent Cloud into BigQuery using the [full
 
 6. Shortly after, the workshop instructor will switch over to the BigQuery page within Google Console to show that a table matching the topic name you used when creating the BigQuery connector in Confluent Cloud has been created within the **workshop** dataset.  Clicking the table name should open a BigQuery editor for it:
 
+***
 
+## <a name="step-12"></a>Step 12: Consume Data from a topic (Python App)
+
+Consume Data from topic abc.clicks.
+
+1. Change the conf file ( Bootstrap server, API KEY, API Secret)
+
+2. Run the app
+
+```SQL
+chmod u+x consumer.py
+
+./consumer.py conf
+```
+  
 
 ***
 
-## <a name="step-12"></a>Step 12: Clean Up Resources
+## <a name="step-13"></a>Step 13: Clean Up Resources
 
 Deleting the resources you created during this workshop will prevent you from incurring additional charges.
 
