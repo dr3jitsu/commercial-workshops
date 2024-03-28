@@ -435,12 +435,12 @@ b. [Hop Windows](https://docs.confluent.io/cloud/current/flink/reference/queries
 c. [Cumulate Windows](https://docs.confluent.io/cloud/current/flink/reference/queries/window-tvf.html#flink-sql-window-tvfs-cumulate)
 <br> 
 
-1. Find the amount of orders for one minute intervals (tumbling window aggregation).
+1. Find the amount of stocks trades for one minute intervals (tumbling window aggregation).
 ```sql
 SELECT window_end,
-       COUNT(DISTINCT order_id) AS num_orders
+       COUNT(side) AS num_orders
 FROM TABLE(
-  TUMBLE(TABLE shoe_orders, DESCRIPTOR(`$rowtime`), INTERVAL '1' MINUTES))
+  TUMBLE(TABLE stocks_topic, DESCRIPTOR(`$rowtime`), INTERVAL '5' MINUTES))
 GROUP BY window_end;
 ```
 
