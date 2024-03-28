@@ -170,47 +170,45 @@ An environment contains clusters and its deployed components such as Apache Flin
 
 2. Click on **Cluster Settings**. This is where you can find your *Cluster ID, Bootstrap Server, Cloud Details, Cluster Type,* and *Capacity Limits*.
 3. On the same navigation menu, select **Topics** and click **Create Topic**. 
-4. Enter **shoe_products** as the topic name, **3** as the number of partitions, and then click **Create with defaults**. 
+4. Enter **users_topic** as the topic name, **1** as the number of partitions, and then click **Create with defaults**. 
 
 <div align="center" padding=25px>
     <img src="images/create-topic.png" width=50% height=50%>
 </div>
 
-5. Repeat the previous step and create a second topic name **shoe_customers** and **3** as the number of partitions.
-   
-6. Repeat the previous step and create a second topic name **shoe_orders** and **3** as the number of partitions.
+5. Repeat the previous step and create a second topic name **stocks_topic** and **1** as the number of partitions. 
 
 > **Note:** Topics have many configurable parameters. A complete list of those configurations for Confluent Cloud can be found [here](https://docs.confluent.io/cloud/current/using/broker-config.html). If you are interested in viewing the default configurations, you can view them in the Topic Summary on the right side. 
 
-7. After topic creation, the **Topics UI** allows you to monitor production and consumption throughput metrics and the configuration parameters for your topics. When you begin sending messages to Confluent Cloud, you will be able to view those messages and message schemas.
-8. Below is a look at the topic, **shoe_orders**, but you need to send data to this topic before you see any metrics.
+6. After topic creation, the **Topics UI** allows you to monitor production and consumption throughput metrics and the configuration parameters for your topics. When you begin sending messages to Confluent Cloud, you will be able to view those messages and message schemas.
+7. Below is a look at the topic, **users_topic**, but you need to send data to this topic before you see any metrics.
 
 <div align="center" padding=25px>
-    <img src="images/shoe_orders-topic.png" width=75% height=75%>
+    <img src="images/users-topic.png" width=75% height=75%>
 </div>
 
 ***
 
-## <a name="step-5"></a>Create an API Key
+## <a name="step-5"></a>Create an API Key Pair
 
-1. Click **API Keys** on the navigation menu. 
-2. Click **Create Key** in order to create your first API Key. If you have an existing API Key select **+ Add Key** to create another API Key.
+1. Select **API Access** on the navigation menu. 
+2. A key pair has already been created for the ksqlDB application you created in *Step 3*. Select **+ Add Key** to create another key pair. 
 
 <div align="center" padding=25px>
-    <img src="images/create-apikey.png" width=75% height=75%>
+    <img src="images/create-key.png" width=75% height=75%>
 </div>
 
 3. Select **Global Access** and then click **Next**. 
 4. Copy or save your API Key and Secret somewhere. You will need these later on in the lab, you will not be able to view the secret again once you close this dialogue. 
-5. After creating and saving the API key, you will see this API key in the Confluent Cloud UI in the **API Keys** section. If you don’t see the API key populate right away, refresh the browser.
+5. After creating and saving the API key, you will see this API key in the Confluent Cloud UI in the **API Access** tab. If you don’t see the API key populate right away, refresh the browser.
 
 ***
 
-## <a name="step-6"></a>Create Datagen Connectors for Customers, Products and Orders
+## <a name="step-6"></a>Create Datagen Connectors for Users and Stocks
 
-The next step is to produce sample data using the Datagen Source connector. You will create three Datagen Source connectors. One connector will send sample customer data to **shoe_customers** topic, the other connector will send sample product data to **shoe_products** topic, and final connector will send sample order data to **shoe_orders** topic.
+The next step is to produce sample data using the Datagen Source connector. You will create two Datagen Source connectors. One connector will send sample user data to **users_topic** and the other connector will send sample stock data to **stocks_topic**.
 
-1. First, you will create the connector that will send data to **shoe_customers**. From the Confluent Cloud UI, click on the **Connectors** tab on the navigation menu. Click on the **Datagen Source** icon.
+1. First, you will create the connector that will send data to **users_topic**. From the Confluent Cloud UI, click on the **Connectors** tab on the navigation menu. Click on the **Datagen Source** icon.
 
 <div align="center" padding=25px>
     <img src="images/connectors.png" width=75% height=75%>
@@ -222,36 +220,26 @@ The next step is to produce sample data using the Datagen Source connector. You 
 
 | setting                            | value                        |
 |------------------------------------|------------------------------|
-| name                               | DatagenSourceConnector_shoe_customers |
+| name                               | DatagenSourceConnector_Users |
 | api key                            | [*from step 5* ](#step-5)    |
 | api secret                         | [*from step 5* ](#step-5)    |
-| topic                              | shoe_customers               |
-| output message format              | AVRO                         |
-| quickstart                         | Shoe customers               |
+| topic                              | users_topic                  |
+| output message format              | JSON                         |
+| quickstart                         | USERS                        |
 | max interval between messages (ms) | 1000                         |
 | tasks                              | 1                            |
 </div>
 
 <br>
 
-<div align="center" padding=25px>
-    <img src="images/datagen-1.png" width=75% height=75%>
-    <img src="images/datagen-2.png" width=75% height=75%>
-</div>
-
-3. Click on **Show advanced configurations** and complete the necessary fields and click **Continue**.
-
-<div align="center" padding=25px>
-    <img src="images/datagen-3.png" width=75% height=75%>
-</div>
-   
+3. Click on **Next**.
 4. Before launching the connector, you should see something similar to the following. If everything looks similar, select **Launch**. 
 
 <div align="center" padding=25px>
-    <img src="images/datagen-4.png" width=50% height=50%>
+    <img src="images/add-datagen-conn.png" width=50% height=50%>
 </div>
 
-5. Next, create the second connector that will send data to **shoe_products**. Click on **+ Add Connector** and then the **datagen Source** icon again. 
+5. Next, create the second connector that will send data to **stocks_topic**. Click on **+ Add Connector** and then the **datagen Source** icon again. 
 
 6. Enter the following configuration details. The remaining fields can be left blank. 
 
@@ -259,12 +247,12 @@ The next step is to produce sample data using the Datagen Source connector. You 
 
 | setting                            | value                        |
 |------------------------------------|------------------------------|
-| name                               | DatagenSourceConnector_shoe_products |
+| name                               | DatagenSourceConnector_Stocks|
 | api key                            | [*from step 5* ](#step-5)    |
 | api secret                         | [*from step 5* ](#step-5)    |
-| topic                              | shoe_products                |
-| output message format              | AVRO                         |
-| quickstart                         | Shoes                        |
+| topic                              | stocks_topic                 |
+| output message format              | JSON                         |
+| quickstart                         | STOCKS                       |
 | max interval between messages (ms) | 1000                         |
 | tasks                              | 1                            |
 </div>
@@ -272,28 +260,6 @@ The next step is to produce sample data using the Datagen Source connector. You 
 <br> 
 
 7. Review the output again and then select **Launch**.
-
-8. Next, create the second connector that will send data to **shoe_orders**. Click on **+ Add Connector** and then the **datagen Source** icon again. 
-
-9. Enter the following configuration details. The remaining fields can be left blank. 
-
-<div align="center">
-
-| setting                            | value                        |
-|------------------------------------|------------------------------|
-| name                               | DatagenSourceConnector_shoe_orders |
-| api key                            | [*from step 5* ](#step-5)    |
-| api secret                         | [*from step 5* ](#step-5)    |
-| topic                              | shoe_orders                  |
-| output message format              | AVRO                         |
-| quickstart                         | Shoe orders                  |
-| max interval between messages (ms) | 1000                         |
-| tasks                              | 1                            |
-</div>
-
-<br> 
-
-10. Review the output again and then select **Launch**.
 
 > **Note:** It may take a few moments for the connectors to launch. Check the status and when both are ready, the status should show *running*. <br> <div align="center"><img src="images/running-connectors.png" width=75% height=75%></div>
 
@@ -303,20 +269,28 @@ The next step is to produce sample data using the Datagen Source connector. You 
 > * If neither of these steps work, try creating another Datagen connector.
 
 
-11. You can view the sample data flowing into topics in real time. Navigate to  the **Topics** tab and then click on the **shoe_customers**. You can view the production and consumption throughput metrics here.
-
-12. Click on **Messages**.
-
-* You should now be able to see the messages within the UI. You can view the specific messages by clicking the icon. 
+8. You can view the sample data flowing into topics in real time. Navigate to  the **Topics** tab and then click on the **users_topic**. You can view the production and consumption throughput metrics here.
 
 <div align="center">
-    <img src="images/message-view-1.png">
+    <img src="images/users-topic-overview.png" width=75% height=75%>
+</div>
+
+9. Click on **Messages**. In the search bar, select **Jump to Offset** from the drop-down, set the offset to **0**, and then execute the search. 
+
+* You should now be able to see the messages within the UI. You can toggle between the table and payload views of the events by clicking the following buttons. 
+
+<div align="center">
+    <img src="images/card-view.png">
 </div> 
 
-* The message details should look something like the following. 
+* The messages should look something like the following. 
 
 <div align="center">
-    <img src="images/message-view-2.png" width=75% height=75%>
+    <img src="images/card-view-values.png" width=75% height=75%>
+</div>
+
+<div align="center">
+    <p style="color:red">STOP HERE FOR PRESENTATION</p>
 </div>
 
 ***
