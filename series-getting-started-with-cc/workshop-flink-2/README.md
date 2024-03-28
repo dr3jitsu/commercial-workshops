@@ -365,7 +365,7 @@ SELECT * FROM users_topic
   WHERE `userid` = 'User_8' AND `gender` LIKE 'MA%';
 ```
 
-5. Check the first ten stocks trades for one customer.
+5. Check the first five stocks trades for one customer.
 ```sql
 SELECT side,
        quantity,
@@ -373,7 +373,7 @@ SELECT side,
        $rowtime AS ingestion_time
   FROM stocks_topic
   WHERE userid = 'User_8'
-  LIMIT 10;
+  LIMIT 5;
 ```
 
 6. Find the message timestamps for all stocks trades of one user.
@@ -395,24 +395,24 @@ SELECT side,
 ## <a name="step-8"></a>Flink Aggregations
 1. Find the number of users records.
 ```sql
-SELECT COUNT(id) AS num_records
+SELECT COUNT(userid) AS num_records
 FROM users_topic;
 ```
 
 2. Find the number of unique users records.
 ```sql
-SELECT COUNT(DISTINCT id) AS num_customers
+SELECT COUNT(DISTINCT userid) AS num_customers
 FROM users_topic;
 ```
 
-3. For each shoe brand, find the number of shoe models, average rating and maximum model price. 
+3. For each userid, find the number of stock symbol, average quantity and maximum model price. 
 ```sql
-SELECT brand as brand_name, 
-       COUNT(DISTINCT name) as models_by_brand,
-       ROUND(AVG(rating),2) as avg_rating,
-       MAX(sale_price) as max_price
-FROM shoe_products
-GROUP BY brand;
+SELECT userid as user_id, 
+       COUNT(DISTINCT symbol) as stock_by_symbol,
+       ROUND(AVG(quantity),2) as avg_quantity,
+       MAX(price) as max_price
+FROM stocks_topic
+GROUP BY userid;
 ```
 
 <div align="center">
