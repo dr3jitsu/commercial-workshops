@@ -461,7 +461,7 @@ GROUP BY symbol
 ```sql
 CREATE TABLE number_of_times_stock_bought(
   symbol STRING,
-  total_times_bought INT,
+  total_times_bought BIGINT,
   PRIMARY KEY (symbol) NOT ENFORCED
 )WITH (
      'kafka.partitions' = '3'
