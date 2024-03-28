@@ -481,6 +481,38 @@ GROUP BY symbol
 ```sql
 select * from number_of_times_stock_bought;
 ```
+8. Next, create a table that calculates the total number of stocks purchased per symbol.  
+```sql
+SELECT symbol,
+           SUM(quantity) AS total_quantity
+FROM stocks_topic
+WHERE side = 'BUY'
+GROUP BY symbol
+```
+9. Create new table total_stock_purchased to store the result. 
+```sql
+CREATE TABLE total_stock_purchased(
+  symbol STRING,
+  total_quantity BIGINT,
+  PRIMARY KEY (symbol) NOT ENFORCED
+)WITH (
+     'kafka.partitions' = '3'
+);
+```
+
+10. Insert all the aggregate the data by counting buys of stocks to the number_of_times_stock_bought table. 
+```sql
+INSERT INTO total_stock_purchased
+SELECT symbol,
+       SUM(quantity) AS total_quantity 
+FROM stocks_topic
+WHERE side = 'BUY'
+GROUP BY symbol
+```
+11. Check the result by running query to the total_stock_purchased table. 
+```sql
+select * from total_stock_purchased;
+```
 > **Note:** Check this [link](https://docs.confluent.io/cloud/current/flink/reference/functions/aggregate-functions.html) for more information about Flink aggregation functions.
 
 ***
