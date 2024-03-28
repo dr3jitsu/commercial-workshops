@@ -385,6 +385,8 @@ SELECT side,
   FROM stocks_topic
   WHERE userid = 'User_8';
 ```
+
+
 7. Enrich Stocks Trades information with Users Topic. Create a new table for enriched order information..
 ```sql
 CREATE TABLE stocks_trades_enriched_user_detail(
@@ -401,6 +403,7 @@ CREATE TABLE stocks_trades_enriched_user_detail(
     'changelog.mode' = 'retract'
 );
 ```
+
 8. Insert joined data from 2 tables into the new table.
 ```sql
 INSERT INTO stocks_trades_enriched_user_detail
