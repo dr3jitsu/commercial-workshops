@@ -444,7 +444,36 @@ SELECT userid as user_id,
 FROM stocks_topic
 GROUP BY userid;
 ```
-
+4. Running query to aggregate the data by counting buys of stocks. 
+```sql
+SELECT symbol,
+       COUNT(quantity) AS total_times_bought
+FROM stocks_topic
+WHERE side = 'BUY'
+GROUP BY symbol
+```
+5. Create new table number_of_times_stock_bought to store the result. 
+```sql
+CREATE TABLE number_of_times_stock_bought(
+  symbol STRING,
+  total_times_bought INT,
+  PRIMARY KEY (symbol) NOT ENFORCED
+)WITH (
+     'kafka.partitions' = '3'
+);
+6. Insert all the aggregate the data by counting buys of stocks to the number_of_times_stock_bought table. 
+```sql
+INSERT INTO number_of_times_stock_bought
+SELECT symbol,
+       COUNT(quantity) AS total_times_bought
+FROM stocks_topic
+WHERE side = 'BUY'
+GROUP BY symbol
+```
+7. Running query to the number_of_times_stock_bought table. 
+```sql
+select * from number_of_times_stock_bought;
+```
 > **Note:** Check this [link](https://docs.confluent.io/cloud/current/flink/reference/functions/aggregate-functions.html) for more information about Flink aggregation functions.
 
 ***
