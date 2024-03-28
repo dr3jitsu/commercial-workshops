@@ -376,6 +376,7 @@ SELECT side,
   LIMIT 5;
 ```
 
+
 6. Find the message timestamps for all stocks trades of one user.
 ```sql
 SELECT side,
