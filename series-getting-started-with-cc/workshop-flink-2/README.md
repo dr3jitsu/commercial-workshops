@@ -456,6 +456,7 @@ FROM stocks_topic
 WHERE side = 'BUY'
 GROUP BY symbol
 ```
+
 5. Create new table number_of_times_stock_bought to store the result. 
 ```sql
 CREATE TABLE number_of_times_stock_bought(
@@ -465,6 +466,8 @@ CREATE TABLE number_of_times_stock_bought(
 )WITH (
      'kafka.partitions' = '3'
 );
+```
+
 6. Insert all the aggregate the data by counting buys of stocks to the number_of_times_stock_bought table. 
 ```sql
 INSERT INTO number_of_times_stock_bought
