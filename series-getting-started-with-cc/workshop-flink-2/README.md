@@ -385,11 +385,41 @@ SELECT side,
   FROM stocks_topic
   WHERE userid = 'User_8';
 ```
-
-<div align="center">
-    <img src="images/flink-basics-ingestion-time.png" width=75% height=75%>
-</div>
-
+7. Enrich Stocks Trades information with Users Topic. Create a new table for enriched order information..
+```sql
+CREATE TABLE stocks_trades_enriched_user_detail(
+  userid STRING,
+  regionid STRING, 
+  gender STRING, 
+  side STRING, 
+  quantity INT, 
+  symbol STRING, 
+  price INT, 
+  account STRING
+) WITH (
+    'kafka.partitions' = '3',
+    'changelog.mode' = 'retract'
+);
+```
+8. Insert joined data from 2 tables into the new table.
+```sql
+INSERT INTO stocks_trades_enriched_user_detail
+     SELECT ut.userid AS userid, 
+           regionid, 
+           gender, 
+           side, 
+           quantity, 
+           symbol, 
+           price, 
+           account
+    FROM stocks_topic st
+    LEFT JOIN users_topic ut
+    ON st.userid = ut.userid;
+```
+9. Check the enriched table by running this query.
+```sql
+select * from stocks_trades_enriched_user_detail;
+```
 ***
 
 ## <a name="step-8"></a>Flink Aggregations
