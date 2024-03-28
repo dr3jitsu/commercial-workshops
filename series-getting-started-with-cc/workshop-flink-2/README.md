@@ -332,57 +332,58 @@ SHOW TABLES;
     <img src="images/show-tables.png" width=75% height=75%>
 </div>
 
-Understand how the table `shoe_products` was created:
+Understand how the table `stocks_topic` was created:
 
 ```sql
-SHOW CREATE TABLE shoe_products;
+SHOW CREATE TABLE stocks_topic;
 ```
 
 <div align="center">
-    <img src="images/show-table-shoe_products.png" width=75% height=75%>
+    <img src="images/show-table-stocks_topic.png" width=75% height=75%>
 </div>
 
 You can find more information about all DDL Statements [here.](https://docs.confluent.io/cloud/current/flink/reference/statements/overview.html)
 
-Let us first check the table schema for our `shoe_products` catalog. This should be the same as the topic schema in Schema Registry.
+Let us first check the table schema for our `stocks_topic` catalog. This should be the same as the topic schema in Schema Registry.
 ```sql
-DESCRIBE shoe_products;
+DESCRIBE stocks_topic;
 ```
 
 2. Let's check if any product records exist in the table.
 ```sql
-SELECT * FROM shoe_products;
+SELECT * FROM stocks_topic;
 ```
 
-3. Check if the `shoe_customers` schema  exists. 
+3. Check if the `users_topic` schema  exists. 
 ```sql
-DESCRIBE shoe_customers;
+DESCRIBE users_topic;
 ```
 
 4. Check the customers in Texas whose name start with `B`.
 ```sql
-SELECT * FROM shoe_customers
-  WHERE `state` = 'Texas' AND `last_name` LIKE 'B%';
+SELECT * FROM users_topic
+  WHERE `userid` = 'User_8' AND `gender` LIKE 'MA%';
 ```
 
-5. Check the first ten orders for one customer.
+5. Check the first ten stocks trades for one customer.
 ```sql
-SELECT order_id,
-       product_id,
-       customer_id,
+SELECT side,
+       quantity,
+       symbol,
        $rowtime AS ingestion_time
-  FROM shoe_orders
-  WHERE customer_id = 'b523f7f3-0338-4f1f-a951-a387beeb8b6a'
+  FROM stocks_topic
+  WHERE userid = 'User_8'
   LIMIT 10;
 ```
 
-6. Find the message timestamps for all orders of one customer.
+6. Find the message timestamps for all stocks trades of one user.
 ```sql
-SELECT order_id,
-       customer_id,
+SELECT side,
+       quantity,
+       symbol,
        $rowtime AS ingestion_time
-FROM shoe_orders
-WHERE customer_id = 'b523f7f3-0338-4f1f-a951-a387beeb8b6a';
+  FROM stocks_topic
+  WHERE userid = 'User_8';
 ```
 
 <div align="center">
@@ -392,16 +393,16 @@ WHERE customer_id = 'b523f7f3-0338-4f1f-a951-a387beeb8b6a';
 ***
 
 ## <a name="step-8"></a>Flink Aggregations
-1. Find the number of customers records.
+1. Find the number of users records.
 ```sql
 SELECT COUNT(id) AS num_records
-FROM shoe_customers;
+FROM users_topic;
 ```
 
-2. Find the number of unique customers records.
+2. Find the number of unique users records.
 ```sql
 SELECT COUNT(DISTINCT id) AS num_customers
-FROM shoe_customers;
+FROM users_topic;
 ```
 
 3. For each shoe brand, find the number of shoe models, average rating and maximum model price. 
