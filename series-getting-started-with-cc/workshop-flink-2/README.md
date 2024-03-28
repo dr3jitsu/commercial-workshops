@@ -416,7 +416,7 @@ GROUP BY userid;
 ```
 
 <div align="center">
-    <img src="images/flink-data-aggregation.gif" width=75% height=75%>
+    <img src="images/flink-data-aggregation.png" width=75% height=75%>
 </div>
 
 > **Note:** Check this [link](https://docs.confluent.io/cloud/current/flink/reference/functions/aggregate-functions.html) for more information about Flink aggregation functions.
