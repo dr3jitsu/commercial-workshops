@@ -224,7 +224,7 @@ The next step is to produce sample data using the Datagen Source connector. You 
 | api key                            | [*from step 5* ](#step-5)    |
 | api secret                         | [*from step 5* ](#step-5)    |
 | topic                              | users_topic                  |
-| output message format              | JSON                         |
+| output message format              | AVRO                         |
 | quickstart                         | USERS                        |
 | max interval between messages (ms) | 1000                         |
 | tasks                              | 1                            |
@@ -232,7 +232,12 @@ The next step is to produce sample data using the Datagen Source connector. You 
 
 <br>
 
-3. Click on **Next**.
+3. Click on **Show advanced configurations** and complete the necessary fields and click **Continue**.
+
+<div align="center" padding=25px>
+    <img src="images/datagen-3.png" width=75% height=75%>
+</div>
+
 4. Before launching the connector, you should see something similar to the following. If everything looks similar, select **Launch**. 
 
 <div align="center" padding=25px>
@@ -251,15 +256,21 @@ The next step is to produce sample data using the Datagen Source connector. You 
 | api key                            | [*from step 5* ](#step-5)    |
 | api secret                         | [*from step 5* ](#step-5)    |
 | topic                              | stocks_topic                 |
-| output message format              | JSON                         |
-| quickstart                         | STOCKS                       |
+| output message format              | AVRO                         |
+| quickstart                         | STOCK_TRADES                 |
 | max interval between messages (ms) | 1000                         |
 | tasks                              | 1                            |
 </div>
 
 <br> 
 
-7. Review the output again and then select **Launch**.
+7. Click on **Show advanced configurations** and complete the necessary fields and click **Continue**.
+
+<div align="center" padding=25px>
+    <img src="images/datagen-3.png" width=75% height=75%>
+</div>
+
+8. Review the output again and then select **Launch**.
 
 > **Note:** It may take a few moments for the connectors to launch. Check the status and when both are ready, the status should show *running*. <br> <div align="center"><img src="images/running-connectors.png" width=75% height=75%></div>
 
@@ -269,13 +280,13 @@ The next step is to produce sample data using the Datagen Source connector. You 
 > * If neither of these steps work, try creating another Datagen connector.
 
 
-8. You can view the sample data flowing into topics in real time. Navigate to  the **Topics** tab and then click on the **users_topic**. You can view the production and consumption throughput metrics here.
+9. You can view the sample data flowing into topics in real time. Navigate to  the **Topics** tab and then click on the **users_topic**. You can view the production and consumption throughput metrics here.
 
 <div align="center">
     <img src="images/users-topic-overview.png" width=75% height=75%>
 </div>
 
-9. Click on **Messages**. In the search bar, select **Jump to Offset** from the drop-down, set the offset to **0**, and then execute the search. 
+10. Click on **Messages**. In the search bar, select **Jump to Offset** from the drop-down, set the offset to **0**, and then execute the search. 
 
 * You should now be able to see the messages within the UI. You can toggle between the table and payload views of the events by clicking the following buttons. 
 
