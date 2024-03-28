@@ -12,7 +12,7 @@
 3. [Create Flink Compute Pool](#step-3)
 4. [Create Topics and walk through Confluent Cloud Dashboard](#step-4)
 5. [Create an API Key Pair](#step-5)
-6. [Create Datagen Connectors for Customers, Products and Orders](#step-6)
+6. [Create Datagen Connectors for Users and Stocks](#step-6)
 7. [Flink Basics](#step-7)
 8. [Flink Aggregations](#step-8)
 9. [Flink Windowing Functions](#step-9)
