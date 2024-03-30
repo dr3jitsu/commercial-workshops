@@ -529,7 +529,7 @@ b. [Hop Windows](https://docs.confluent.io/cloud/current/flink/reference/queries
 c. [Cumulate Windows](https://docs.confluent.io/cloud/current/flink/reference/queries/window-tvf.html#flink-sql-window-tvfs-cumulate)
 <br> 
 
-1. Find the amount of stocks trades for one minute intervals (tumbling window aggregation).
+1. Find the amount of stocks trades for five minute intervals (tumbling window aggregation).
 ```sql
 SELECT window_end,
        COUNT(side) AS num_orders
