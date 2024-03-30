@@ -335,10 +335,6 @@ Understand how the table `stocks_topic` was created:
 SHOW CREATE TABLE stocks_topic;
 ```
 
-<div align="center">
-    <img src="images/show-table-stocks_topic.png" width=75% height=75%>
-</div>
-
 You can find more information about all DDL Statements [here.](https://docs.confluent.io/cloud/current/flink/reference/statements/overview.html)
 
 Let us first check the table schema for our `stocks_topic` catalog. This should be the same as the topic schema in Schema Registry.
