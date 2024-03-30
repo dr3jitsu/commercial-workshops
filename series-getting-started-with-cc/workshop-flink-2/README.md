@@ -556,67 +556,63 @@ GROUP BY window_start, window_end;
 
 After we walked through a few examples on how to use Flink for Windowing, Tumble Windows and Hop Windows, We will use it including how to use it for anomaly or fraud detection. Flink enables aggregation operations on tables, as you saw in the previous step, and you have the ability to set time boundaries named windows. A window has a start time and an end time, which you access in your queries by using WINDOWSTART and WINDOWEND. When using Windowing, aggregate functions are applied only to the records that occur within the specified time window. 
 
-1. Calculate loyalty levels of each customer
+1. Create table stocks_purchased_today
 ```sql
-SELECT
-  email,
-  SUM(sale_price) AS total,
-  CASE
-    WHEN SUM(sale_price) > 700000 THEN 'GOLD'
-    WHEN SUM(sale_price) > 70000 THEN 'SILVER'
-    WHEN SUM(sale_price) > 7000 THEN 'BRONZE'
-    ELSE 'CLIMBING'
-  END AS loyalty_level
-FROM shoe_orders_enriched_customer_product
-GROUP BY email;
-```
-
-<div align="center">
-    <img src="images/flink-loyalty-level-calculation.gif" width=75% height=75%>
-</div>
-
-
-2. Create a new table that will store the loyalty levels if the customers.
-```sql
-CREATE TABLE shoe_loyalty_levels(
-  email STRING,
-  total BIGINT,
-  loyalty_level STRING,
-  PRIMARY KEY (email) NOT ENFORCED
-) WITH (
+CREATE TABLE stocks_purchased_today(
+  symbol STRING,
+  window_start TIMESTAMP,
+  window_end TIMESTAMP,
+  quantity BIGINT,
+  PRIMARY KEY (symbol, window_start,window_end) NOT ENFORCED
+)WITH (
      'kafka.partitions' = '3'
 );
 ```
 
-3. Insert the calculated loyal levels into the new table.
+2. Insert data into the new table created above.
 ```sql
-INSERT INTO shoe_loyalty_levels(
- email,
- total,
- loyalty_level)
-SELECT
-  email,
-  SUM(sale_price) AS total,
-  CASE
-    WHEN SUM(sale_price) > 700000 THEN 'GOLD'
-    WHEN SUM(sale_price) > 70000 THEN 'SILVER'
-    WHEN SUM(sale_price) > 7000 THEN 'BRONZE'
-    ELSE 'CLIMBING'
-  END AS loyalty_level
-FROM shoe_orders_enriched_customer_product
-GROUP BY email;
+insert into stocks_purchased_today
+SELECT symbol,window_start,
+  window_end,     
+  COUNT(*) AS quantity
+FROM TABLE(
+  TUMBLE(TABLE stocks_trades_enriched_user_detail, DESCRIPTOR(`$rowtime`), INTERVAL '5' MINUTES))
+GROUP BY symbol,window_end,window_start;
 ```
 
-4. Verify the results.
+3. Once you have created the windowed table, and you have inserted the data , use the Flink Workspace to query the table. If you construct the statement on your own, make sure it looks like the following..
 ```sql
-SELECT *
-FROM shoe_loyalty_levels;
+select * from stocks_purchased_today
 ```
 
-<div align="center">
-    <img src="images/flink-loyalty-level-table.gif" width=75% height=75%>
-</div>
-
+4. Going along with the theme of fraud detection, create a table named accounts_to_monitor with accounts to monitor based on their activity during a given time frame. In the Flink Workspace , paste the following statement and run the query.
+```sql
+CREATE TABLE accounts_to_monitor(
+  window_start TIMESTAMP,
+  window_end TIMESTAMP,
+  account STRING,
+  quantity BIGINT,
+  PRIMARY KEY (account, window_start,window_end) NOT ENFORCED
+)WITH (
+     'kafka.partitions' = '3'
+);
+```
+5. Insert data into the new table created above.
+```sql
+INSERT INTO accounts_to_monitor
+SELECT window_start,
+  window_end,
+  account,     
+  COUNT(*) AS quantity
+FROM TABLE(
+  TUMBLE(TABLE stocks_trades_enriched_user_detail, DESCRIPTOR(`$rowtime`), INTERVAL '5' MINUTES))
+GROUP BY account,window_end,window_start
+HAVING COUNT(*)>10;
+```
+6. Verify the result.
+  ```sql
+Select * from  accounts_to_monitor;
+``` 
 ***
 
 ## <a name="step-13"></a>Create Promotional Campaigns
