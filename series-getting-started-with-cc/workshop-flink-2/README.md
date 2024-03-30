@@ -552,7 +552,10 @@ GROUP BY window_start, window_end;
 
 ***
 
-## <a name="step-12"></a>Customer Loyalty Level Calculation
+## <a name="step-12"></a>Fraud Detection
+
+After we walked through a few examples on how to use Flink for Windowing, Tumble Windows and Hop Windows, We will use it including how to use it for anomaly or fraud detection. Flink enables aggregation operations on tables, as you saw in the previous step, and you have the ability to set time boundaries named windows. A window has a start time and an end time, which you access in your queries by using WINDOWSTART and WINDOWEND. When using Windowing, aggregate functions are applied only to the records that occur within the specified time window. 
+
 1. Calculate loyalty levels of each customer
 ```sql
 SELECT
