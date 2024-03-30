@@ -16,13 +16,10 @@
 7. [Flink Basics](#step-7)
 8. [Flink Aggregations](#step-8)
 9. [Flink Windowing Functions](#step-9)
-10. [Flink Tables - Primary Key](#step-10)
-11. [Flink Joins](#step-11)
-12. [Customer Loyalty Level Calculation](#step-12)
-13. [Create Promotional Campaigns](#step-13)
-14. [Flink Monitoring](#step-14)
-15. [Clean Up Resources](#step-15)
-16. [Confluent Resources and Further Testing](#step-16)
+10. [Fraud Detection](#step-10)
+11. [Flink Monitoring](#step-11)
+12. [Clean Up Resources](#step-12)
+13. [Confluent Resources and Further Testing](#step-13)
 
 ***
 
@@ -552,7 +549,7 @@ GROUP BY window_start, window_end;
 
 ***
 
-## <a name="step-12"></a>Fraud Detection
+## <a name="step-10"></a>Fraud Detection
 
 After we walked through a few examples on how to use Flink for Windowing, Tumble Windows and Hop Windows, We will use it including how to use it for anomaly or fraud detection. Flink enables aggregation operations on tables, as you saw in the previous step, and you have the ability to set time boundaries named windows. A window has a start time and an end time, which you access in your queries by using WINDOWSTART and WINDOWEND. When using Windowing, aggregate functions are applied only to the records that occur within the specified time window. 
 
@@ -616,7 +613,7 @@ Select * from  accounts_to_monitor;
 ***
 
 
-## <a name="step-14"></a>Flink Monitoring
+## <a name="step-11"></a>Flink Monitoring
 1. Status of all the Flink Jobs is available under **Flink Statements** Tab.
    
 <div align="center">
@@ -640,7 +637,7 @@ Select * from  accounts_to_monitor;
 
 ***
 
-## <a name="step-15"></a>Clean Up Resources
+## <a name="step-12"></a>Clean Up Resources
 
 Deleting the resources you created during this workshop will prevent you from incurring additional charges. 
 
@@ -664,7 +661,7 @@ Deleting the resources you created during this workshop will prevent you from in
 
 *** 
 
-## <a name="step-16"></a>Confluent Resources and Further Testing
+## <a name="step-13"></a>Confluent Resources and Further Testing
 
 Here are some links to check out if you are interested in further testing:
 - [Confluent Cloud Documentation](https://docs.confluent.io/cloud/current/overview.html)
