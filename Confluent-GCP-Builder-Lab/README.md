@@ -417,11 +417,13 @@ INSERT INTO stocks_trades_enriched_user_detail
     LEFT JOIN users_topic ut
     ON st.userid = ut.userid;
 ```
-9. Check the enriched table by running this query.
+9. Add Flink Statement windows by click (+). Check the enriched table by running this query.
 ```sql
 select * from stocks_trades_enriched_user_detail;
 ```
-
+<div align="center">
+    <img src="images/stocks-enriched-query.png" width=75% height=75%>
+</div> 
 ***
 
 ## <a name="step-8"></a>Create a Persistent Query
