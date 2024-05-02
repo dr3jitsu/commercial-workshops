@@ -14,9 +14,9 @@
 5. [Create an API Key Pair](#step-5)
 6. [Create Datagen Connectors for Users and Stocks](#step-6)
 7. [Flink Basics](#step-7)
-8. [Create a Persistent Query](#step-8)
-9. [Aggregate data](#step-9)
-10. [Windowing Operations and Fraud Detection](#step-10)
+8. [Flink Aggregations](#step-8)
+9. [Flink Windowing Functions](#step-9)
+10. [Fraud Detection](#step-10)
 11. [Pull Queries](#step-11)
 12. [Connect BigQuery sink to Confluent Cloud](#step-12)
 13. [Clean Up Resources](#step-13)
@@ -402,7 +402,7 @@ CREATE TABLE stocks_trades_enriched_user_detail(
 );
 ```
 
-8. Insert joined data from 2 tables into the new table.
+8. Insert joined data from 2 tables into the new table. Keep this query running.
 ```sql
 INSERT INTO stocks_trades_enriched_user_detail
      SELECT ut.userid AS userid, 
@@ -428,182 +428,195 @@ select * from stocks_trades_enriched_user_detail;
 
 ***
 
-## <a name="step-8"></a>Create a Persistent Query
-
-A *Persistent Query* runs indefinitely as it processes rows of events and writes to a new topic. You can create persistent queries by deriving new streams and new tables from existing streams or tables.
-
-1. Create a **Persistent Query** named **stocks_enriched** by left joining the stream (**STOCKS_STREAM**) and table (**USERS**). Navigate to the **Editor** and paste the following command.
-
+## <a name="step-8"></a>Flink Aggregations
+1. Find the number of users records.
 ```sql
-CREATE STREAM stocks_enriched WITH (KAFKA_TOPIC='stocks_enriched') AS
-    SELECT users.userid AS userid, 
-           regionid, 
-           gender, 
-           side, 
-           quantity, 
-           symbol, 
-           price, 
-           account
-    FROM stocks_stream
-    LEFT JOIN users
-    ON stocks_stream.userid = users.userid
-EMIT CHANGES;
+SELECT COUNT(userid) AS num_records
+FROM users_topic;
 ```
 
-<div align="center">
-    <img src="images/stocks-enriched-query.png" width=75% height=75%>
-</div> 
-
-2. Using the **Editor**, query the new stream. You can either type in a select statement or you can navigate to the stream and select the query button, similar to how you did it in a previous step. You can also choose to set `auto.offset.reset=earliest`. Your statement should be the following. 
-
+2. Find the number of unique users records.
 ```sql
-SELECT * FROM STOCKS_ENRICHED EMIT CHANGES;
+SELECT COUNT(DISTINCT userid) AS num_customers
+FROM users_topic;
 ```
-* The output from the select statement should be similar to the following: <br> 
 
-<div align="center">
-    <img src="images/stocks-enriched-select-results.png" width=75% height=75%>
-</div> 
+3. For each userid, find the number of stock symbol, average quantity and maximum model price. 
+```sql
+SELECT userid as user_id, 
+       COUNT(DISTINCT symbol) as stock_by_symbol,
+       ROUND(AVG(quantity),2) as avg_quantity,
+       MAX(price) as max_price
+FROM stocks_topic
+GROUP BY userid;
+```
+4. Running query to aggregate the data by counting buys of stocks. 
+```sql
+SELECT symbol,
+       COUNT(quantity) AS total_times_bought
+FROM stocks_topic
+WHERE side = 'BUY'
+GROUP BY symbol
+```
 
-> **Note:** Now that you have a stream of records from the left join of the **USERS** table and **STOCKS_STREAM** stream, you can view the relationship between user and trades in real-time.
+5. Create new table number_of_times_stock_bought to store the result. 
+```sql
+CREATE TABLE number_of_times_stock_bought(
+  symbol STRING,
+  total_times_bought BIGINT,
+  PRIMARY KEY (symbol) NOT ENFORCED
+)WITH (
+     'kafka.partitions' = '3'
+);
+```
 
-4. Next, view the topic created when you created the persistent query with the left join. Navigate to the **Topics** tab on the left hand menu and then select the topic **stocks_enriched**.
+6. Insert all the aggregate the data by counting buys of stocks to the number_of_times_stock_bought table. 
+```sql
+INSERT INTO number_of_times_stock_bought
+SELECT symbol,
+       COUNT(quantity) AS total_times_bought
+FROM stocks_topic
+WHERE side = 'BUY'
+GROUP BY symbol
+```
+7. Running query to the number_of_times_stock_bought table. 
+```sql
+select * from number_of_times_stock_bought;
+```
+8. Next, create a table that calculates the total number of stocks purchased per symbol.  
+```sql
+SELECT symbol,
+           SUM(quantity) AS total_quantity
+FROM stocks_topic
+WHERE side = 'BUY'
+GROUP BY symbol
+```
+9. Create new table total_stock_purchased to store the result. 
+```sql
+CREATE TABLE total_stock_purchased(
+  symbol STRING,
+  total_quantity BIGINT,
+  PRIMARY KEY (symbol) NOT ENFORCED
+)WITH (
+     'kafka.partitions' = '3'
+);
+```
 
-<div align="center">
-    <img src="images/stocks-enriched-topic.png" width=75% height=75%>
-</div>
-
+10. Insert all the aggregate the data by counting buys of stocks to the number_of_times_stock_bought table. 
+```sql
+INSERT INTO total_stock_purchased
+SELECT symbol,
+       SUM(quantity) AS total_quantity 
+FROM stocks_topic
+WHERE side = 'BUY'
+GROUP BY symbol
+```
+11. Check the result by running query to the total_stock_purchased table. 
+```sql
+select * from total_stock_purchased;
+```
+> **Note:** Check this [link](https://docs.confluent.io/cloud/current/flink/reference/functions/aggregate-functions.html) for more information about Flink aggregation functions.
 
 ***
 
-## <a name="step-9"></a>Aggregate Data
+## <a name="step-9"></a>Flink Windowing Functions
+Windows are central to processing infinite streams. Windows split the stream into “buckets” of finite size, over which you can apply computations. This document focuses on how windowing is performed in Confluent Cloud for Apache Flink and how you can benefit from windowed functions.
 
-ksqlDB supports several aggregate functions, like `COUNT` and `SUM`, and you can use these to build stateful aggregates on streaming data. In this step, you will walk through some key examples on different ways you can aggregate your data.
+Flink provides several window table-valued functions (TVF) to divide the elements of your table into windows, including:
 
-1. First, aggregate the data by counting buys and sells of stocks. Navigate back to the Editor and paste the following query to create a new table named **number_of_times_stock_bought**.
+a. [Tumble Windows](https://docs.confluent.io/cloud/current/flink/reference/queries/window-tvf.html#flink-sql-window-tvfs-tumble)
+<br> 
+b. [Hop Windows](https://docs.confluent.io/cloud/current/flink/reference/queries/window-tvf.html#flink-sql-window-tvfs-hop)
+<br> 
+c. [Cumulate Windows](https://docs.confluent.io/cloud/current/flink/reference/queries/window-tvf.html#flink-sql-window-tvfs-cumulate)
+<br> 
 
+1. Find the amount of stocks trades for five minute intervals (tumbling window aggregation).
 ```sql
-CREATE TABLE number_of_times_stock_bought WITH (KAFKA_TOPIC='number_of_times_stock_bought') AS
-    SELECT SYMBOL,
-           COUNT(QUANTITY) AS total_times_bought
-    FROM STOCKS_STREAM
-    WHERE side = 'BUY'
-    GROUP BY SYMBOL
-EMIT CHANGES;
+SELECT window_end,
+       COUNT(side) AS num_orders
+FROM TABLE(
+  TUMBLE(TABLE stocks_topic, DESCRIPTOR(`$rowtime`), INTERVAL '5' MINUTES))
+GROUP BY window_end;
 ```
-2. Next, query this table by going to the **Tables** tab and selecting the query option or typing it directly into the **Editor**. You can also choose to set `auto.offset.reset=earliest`. If you write the statement yourself, make sure it looks like the following.
 
+2. Find the amount of stocks trades for ten minute intervals advanced by five minutes (hopping window aggregation).
 ```sql
-SELECT * FROM NUMBER_OF_TIMES_STOCK_BOUGHT EMIT CHANGES; 
+SELECT window_start,
+       window_end,
+       COUNT(side) AS num_orders
+FROM TABLE(
+  HOP(TABLE stocks_topic, DESCRIPTOR(`$rowtime`), INTERVAL '5' MINUTES, INTERVAL '10' MINUTES))
+GROUP BY window_start, window_end;
 ```
 
-* The results should look something like the following.
-
-<div align="center">
-    <img src="images/times-bought-select-results.png" width=75% height=75%>
-</div>
-
-3. Next, create a table that calculates the total number of stocks purchased per symbol. You can choose to set `auto.offset.reset=earliest`.
-
-```sql
-CREATE TABLE total_stock_purchased WITH (KAFKA_TOPIC='total_stock_purchased') AS
-    SELECT symbol,
-           SUM(QUANTITY) AS TOTAL_QUANTITY
-    FROM STOCKS_ENRICHED
-	WHERE SIDE = 'BUY'
-    GROUP BY SYMBOL;
-```
-* Running this query should return something that looks similar to the following.
-
-<div align="center">
-    <img src="images/total-bought-select-results.png" width=75% height=75%>
-</div>
+> **Note:** Check this [link](https://docs.confluent.io/cloud/current/flink/reference/queries/window-tvf.html) for the detailed information about Flink Window aggregations.
 
 ***
 
-## <a name="step-10"></a> Windowing Operations and Fraud Detection
+## <a name="step-10"></a>Fraud Detection
 
-You will walk through a few examples on how to use ksqlDB for Windowing, including how to use it for anomaly or fraud detection. ksqlDB enables aggregation operations on streams and tables, as you saw in the previous step, and you have the ability to set time boundaries named windows. A window has a start time and an end time, which you access in your queries by using `WINDOWSTART` and `WINDOWEND`. When using Windowing, aggregate functions are applied only to the records that occur within the specified time window. ksqlDB tracks windows per record key.
+After we walked through a few examples on how to use Flink for Windowing, Tumble Windows and Hop Windows, We will use it including how to use it for anomaly or fraud detection. Flink enables aggregation operations on tables, as you saw in the previous step, and you have the ability to set time boundaries named windows. A window has a start time and an end time, which you access in your queries by using WINDOWSTART and WINDOWEND. When using Windowing, aggregate functions are applied only to the records that occur within the specified time window. 
 
-There are a few different Windowing operations you can use with ksqlDB. You can learn more about them [here](https://docs.ksqldb.io/en/latest/concepts/time-and-windows-in-ksqldb-queries/#window-types).
-
-1. In the ksqlDB **Editor**, paste the following command in order to create a windowed table named **stocks_purchased_5min_window_tumbling** from the **stocks_topic**. You can set the size of the window to any duration. Set it to 5 minutes in this example.
-
+1. Create table stocks_purchased_today
 ```sql
-CREATE TABLE stocks_purchased_5min_window_tumbling WITH (KAFKA_TOPIC='stocks_purchased_5min_window_tumbling') AS
-    SELECT symbol,
-           COUNT(*) AS quantity
-    FROM stocks_enriched
-    WINDOW TUMBLING (SIZE 5 MINUTES)
-    GROUP BY symbol;
+CREATE TABLE stocks_purchased_today(
+  symbol STRING,
+  window_start TIMESTAMP,
+  window_end TIMESTAMP,
+  quantity BIGINT,
+  PRIMARY KEY (symbol, window_start,window_end) NOT ENFORCED
+)WITH (
+     'kafka.partitions' = '3'
+);
 ```
 
-2. Once you have created the windowed table, use the **Editor** or the **Tables** tab to query the table. If you construct the statement on your own, make sure it looks like the following. 
-
+2. Insert data into the new table created above.
 ```sql
-SELECT * FROM stocks_purchased_5min_window_tumbling EMIT CHANGES;
+insert into stocks_purchased_today
+SELECT symbol,window_start,
+  window_end,     
+  COUNT(*) AS quantity
+FROM TABLE(
+  TUMBLE(TABLE stocks_topic, DESCRIPTOR(`$rowtime`), INTERVAL '5' MINUTES))
+GROUP BY symbol,window_end,window_start;
 ```
 
-* The output should be similar to the following.
-
-<div align="center">
-    <img src="images/stocks_purchased_5min_window_tumbling_select.png" width=75% height=75%>
-</div>
-
-3. Going along with the theme of fraud detection, create a table named **accounts_to_monitor** with accounts to monitor based on their activity during a given time frame. In the ksqlDB **Editor**, paste the following statement and run the query.
-
+3. Once you have created the windowed table, and you have inserted the data , use the Flink Workspace to query the table. If you construct the statement on your own, make sure it looks like the following..
 ```sql
-CREATE TABLE accounts_to_monitor WITH (KAFKA_TOPIC='accounts_to_monitor') AS
-    SELECT ACCOUNT,
-           AS_VALUE(ACCOUNT) AS ACCOUNT_NAME,
-           COUNT(*) AS quantity,
-           TIMESTAMPTOSTRING(WINDOWSTART, 'yyyy-MM-dd HH:mm:ss Z') AS WINDOW_START,
-           TIMESTAMPTOSTRING(WINDOWEND, 'yyyy-MM-dd HH:mm:ss Z') AS WINDOW_END
-    FROM STOCKS_ENRICHED
-    WINDOW TUMBLING (SIZE 5 MINUTES)
-    GROUP BY ACCOUNT
-    HAVING COUNT(*) > 10;
+select * from stocks_purchased_today
 ```
 
-4. Once you have created the **ACCOUNTS_TO_MONITOR** table, use either the **Editor** or the **Tables** tab to query the data from the table. If you construct the statement on your own, make sure it looks like the following.
-
+4. Going along with the theme of fraud detection, create a table named accounts_to_monitor with accounts to monitor based on their activity during a given time frame. In the Flink Workspace , paste the following statement and run the query.
 ```sql
-SELECT * FROM ACCOUNTS_TO_MONITOR EMIT CHANGES;
+CREATE TABLE accounts_to_monitor(
+  window_start TIMESTAMP,
+  window_end TIMESTAMP,
+  account STRING,
+  quantity BIGINT,
+  PRIMARY KEY (window_start,window_end,account) NOT ENFORCED
+)WITH (
+     'kafka.partitions' = '3'
+);
 ```
-
-* The output from this query should look like the following. 
-
-<div align="center">
-    <img src="images/accounts-to-monitor-select-results.png" width=75% height=75%>
-</div>
-
+5. Insert data into the new table created above.
+```sql
+INSERT INTO accounts_to_monitor
+SELECT window_start,
+  window_end,
+  account,     
+  COUNT(*) AS quantity
+FROM TABLE(
+  TUMBLE(TABLE stocks_topic, DESCRIPTOR(`$rowtime`), INTERVAL '5' MINUTES))
+GROUP BY window_end,window_start,account
+HAVING COUNT(*)>10;
+```
+6. Verify the result.
+  ```sql
+Select * from  accounts_to_monitor;
+``` 
 ***
 
-## <a name="step-11"></a>Pull Queries
-
-Building on our Fraud Detection example from the last step, let’s say our fraud service wants to check on high frequency accounts. The fraud service can send a pull query via the ksql API, today we will just mock it with the UI. Then we can monitor the activity for a suspicious account. 
-
-1. First we need to add a property to our query. Pull queries only filter by the primary key by default. To filter by other fields, we need to enable table scans. You can add a property under the auto.offset.reset one already included. You will need to set ksql.query.pull.table.scan.enabled to true
-
-<div align="center">
-    <img src="images/table-scan-true.png" width=50% height=50%>
-</div>
-
-2. Now let’s run our pull query in the Editor to see how our accounts are behaving.  
-
-```sql
-SELECT * FROM ACCOUNTS_TO_MONITOR
-     WHERE QUANTITY > 100;
-```
-3. Once we have identified a potential troublemaker, we can create an ephemeral push query to monitor future trades from our **STOCKS_ENRICHED** stream. This will continue to push trades to the fraud service for further analysis until it is stopped. 
-
-```sql
-SELECT * FROM STOCKS_ENRICHED 
-	WHERE ACCOUNT = 'ABC123'
-	EMIT CHANGES;
-```
-
-***
 
 ## <a name="step-12"></a>Connect BigQuery sink to Confluent Cloud
 
