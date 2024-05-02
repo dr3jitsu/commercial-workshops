@@ -9,7 +9,7 @@
 ## **Agenda**
 1. [Log into Confluent Cloud](#step-1)
 2. [Create an Environment and Cluster](#step-2)
-3. [Create ksqlDB Application](#step-3)
+3. [Create Flink Compute Pool](#step-3)
 4. [Create Topics and walk through Confluent Cloud Dashboard](#step-4)
 5. [Create an API Key Pair](#step-5)
 6. [Create Datagen Connectors for Users and Stocks](#step-6)
@@ -118,17 +118,52 @@ An environment contains clusters and its deployed components such as Apache Flin
 
 ***
 
-## <a name="step-3"></a>Create a ksqlDB Application
+## <a name="step-3"></a>Create a Flink Compute Pool
 
-1. On the navigation menu, select **ksqlDB** and click **Create Application Myself**. 
-2. Select **Global Access** and then **Continue**.
-3. Name you ksqlDB application and set the streaming units to **1**. Click **Launch Application!**
-
-> **Note:** A Confluent Streaming Unit is the unit of pricing for Confluent Cloud ksqlDB. A CSU is an abstract unit that represents the size of your kSQL cluster and scales linearly. 
+1. On the navigation menu, select **Flink** and click **Create Compute Pool**.
 
 <div align="center" padding=25px>
-    <img src="images/create-ksqldb-application.png" width=50% height=50%>
+    <img src="images/create-flink-pool-1.png" width=50% height=50%>
 </div>
+
+2. Select **Region** and then **Continue**.
+<div align="center" padding=25px>
+    <img src="images/create-flink-pool-2.png" width=50% height=50%>
+</div>
+
+3. Name you Pool Name and set the capacity units (CFUs) to **5**. Click **Finish**.
+
+<div align="center" padding=25px>
+    <img src="images/create-flink-pool-3.png" width=50% height=50%>
+</div>
+
+> **Note:** The capacity of a compute pool is measured in CFUs. Compute pools expand and shrink automatically based on the resources required by the statements using them. A compute pool without any running statements scale down to zero. The maximum size of a compute pool is configured during creation. 
+
+4. Flink Compute pools will be ready shortly. You can click **Open SQL workspace** when the pool is ready to use.
+
+<div align="center" padding=25px>
+    <img src="images/create-flink-pool-4.png" width=50% height=50%>
+</div>
+
+5. Change your workspace name by clicking **settings button**. Click **Save changes** after you update the workspace name.
+
+<div align="center" padding=25px>
+    <img src="images/flink-workspace-1.png" width=50% height=50%>
+</div>
+
+6. Set the default Catalog as your environment name.
+
+<div align="center" padding=25px>
+    <img src="images/flink-workspace-2.png" width=50% height=50%>
+</div>
+
+7. Set the default Database as your cluster name.
+
+<div align="center" padding=25px>
+    <img src="images/flink-workspace-3.png" width=50% height=50%>
+</div>
+
+***
 
 ***
 
