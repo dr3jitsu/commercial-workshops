@@ -131,7 +131,7 @@ An environment contains clusters and its deployed components such as Apache Flin
     <img src="images/create-flink-pool-2.png" width=50% height=50%>
 </div>
 
-3. Name you Pool Name and set the capacity units (CFUs) to **5**. Click **Finish**.
+3. Name you **Pool Name**. Click **Create**.
 
 <div align="center" padding=25px>
     <img src="images/create-flink-pool-3.png" width=50% height=50%>
