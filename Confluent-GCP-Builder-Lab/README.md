@@ -424,6 +424,8 @@ select * from stocks_trades_enriched_user_detail;
 <div align="center">
     <img src="images/stocks-enriched-query.png" width=75% height=75%>
 </div> 
+
+
 ***
 
 ## <a name="step-8"></a>Create a Persistent Query
