@@ -17,7 +17,7 @@
 8. [Flink Aggregations](#step-8)
 9. [Flink Windowing Functions](#step-9)
 10. [Fraud Detection](#step-10)
-11. [Pull Queries](#step-11)
+11. [Check Flink Queries](#step-11)
 12. [Connect BigQuery sink to Confluent Cloud](#step-12)
 13. [Clean Up Resources](#step-13)
 14. [Confluent Resources and Further Testing](#step-14)
