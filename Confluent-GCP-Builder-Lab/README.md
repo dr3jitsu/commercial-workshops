@@ -160,7 +160,7 @@ An environment contains clusters and its deployed components such as Apache Flin
 7. Set the default Database as your cluster name.
 
 <div align="center" padding=25px>
-    <img src="images/flink-workspace-3.png" width=50% height=50%>
+    <img src="images/flink-workspace-2.png" width=50% height=50%>
 </div>
 
 ***
