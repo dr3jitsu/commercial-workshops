@@ -721,12 +721,12 @@ The next step is to sink data from Confluent Cloud into BigQuery using the [full
 
 ## <a name="step-13"></a>Clean Up Resources
 
-Deleting the resources you created during this workshop will prevent you from incurring additional charges.
+Deleting the resources you created during this workshop will prevent you from incurring additional charges. 
 
-1. The first item to delete is the ksqlDB application. Select the Delete button under Actions and enter the Application Name to confirm the deletion.
+1. The first item to delete is the Apache Flink Compute Pool. Select the **Delete** button under **Actions** and enter the **Application Name** to confirm the deletion. 
 
 <div align="center">
-    <img src="images/delete-ksqldb.png" width=75% height=75%>
+    <img src="images/flink-delete-compute-pool.png" width=50% height=50%>
 </div>
 
 2. Delete the BigQuery sink connector by navigating to **Connectors** in the navigation panel, clicking your connector name, then clicking the trash can icon in the upper right and entering the connector name to confirm the deletion.
