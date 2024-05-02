@@ -750,9 +750,6 @@ Deleting the resources you created during this workshop will prevent you from in
 ## <a name="step-14"></a>Confluent Resources and Further Testing
 
 Here are some links to check out if you are interested in further testing:
-- [ksqlDB Tutorials](https://kafka-tutorials.confluent.io/)
-- [ksqlDB: The Event Streaming Database, Purpose-Build for Stream Processing](https://ksqldb.io/)
-- [Streams and Tables in Apache Kafka: A Primer](https://www.confluent.io/blog/kafka-streams-tables-part-1-event-streaming/)
 - [Confluent Cloud Documentation](https://docs.confluent.io/cloud/current/overview.html)
 - [Best Practices for Developing Apache Kafka Applications on Confluent Cloud](https://assets.confluent.io/m/14397e757459a58d/original/20200205-WP-Best_Practices_for_Developing_Apache_Kafka_Applications_on_Confluent_Cloud.pdf)
 
