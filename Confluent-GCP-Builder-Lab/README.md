@@ -13,7 +13,7 @@
 4. [Create Topics and walk through Confluent Cloud Dashboard](#step-4)
 5. [Create an API Key Pair](#step-5)
 6. [Create Datagen Connectors for Users and Stocks](#step-6)
-7. [Create a Stream and a Table](#step-7)
+7. [Flink Basics](#step-7)
 8. [Create a Persistent Query](#step-8)
 9. [Aggregate data](#step-9)
 10. [Windowing Operations and Fraud Detection](#step-10)
@@ -307,95 +307,120 @@ The next step is to produce sample data using the Datagen Source connector. You 
 
 ***
 
-## <a name="step-7"></a>Create a Stream and a Table
+## <a name="step-7"></a>Flink Basics
+Kafka topics and schemas are always in sync with our Flink cluster. Any topic created in Kafka is visible directly as a table in Flink, and any table created in Flink is visible as a topic in Kafka. Effectively, Flink provides a SQL interface on top of Confluent Cloud.
 
-Now that you are producing a continuous stream of data to **users_topic** and **stocks_topic**, you will use ksqlDB to understand the data better by performing continuous transformations, masking certain fields, and creating new derived topics with the enriched data.
+Following mappings exist:
+| Kafka          | Flink     | 
+| ------------   | --------- |
+| Environment    | Catalog   | 
+| Cluster        | Database  |
+| Topic + Schema | Table     |
 
-You will start by creating a stream and table, which will be the foundation for your transformations in the upcoming steps.
-
-A *stream* provides immutable data. It is append only for new events; existing events cannot be changed. Streams are persistent, durable, and fault tolerant. Events in a stream can be keyed.
-
-A *table* provides mutable data. New events—rows—can be inserted, and existing rows can be updated and deleted. Like streams, tables are persistent, durable, and fault tolerant. A table behaves much like an RDBMS materialized view because it is being changed automatically as soon as any of its input streams or tables change, rather than letting you directly run insert, update, or delete operations against it.
-
-To learn more about *streams* and *tables*, the following resources are recommended:
-- [Streams and Tables in Apache Kafka: A Primer](https://www.confluent.io/blog/kafka-streams-tables-part-1-event-streaming/)
-- [ksqlDB: Data Definition](https://docs.ksqldb.io/en/latest/reference/sql/data-definition/)
-
-<br>
-
-1. Navigate back to the **ksqlDB** tab and click on your application name. This will bring us to the ksqlDB editor. 
-
-> **Note:** You can interact with ksqlDB through the **Editor**. You can create a stream by using the `CREATE STREAM` statement and a table using the `CREATE TABLE` statement. <br><br>To write streaming queries against **users_topic** and **stocks_topic**, you will need to register the topics with ksqlDB as a stream and/or table. 
-
-2. First, create a **Stream** by registering the **stocks_topic** as a stream called **stocks_stream**. 
-
+1. Familiarize with **Flink SQL** Basics.
 ```sql
-CREATE STREAM stocks_stream (
-    side varchar, 
-    quantity int, 
-    symbol varchar, 
-    price int, 
-    account varchar, 
-    userid varchar
-) 
-WITH (kafka_topic='stocks_topic', value_format='AVRO');
+SHOW CATALOGS;
 ```
 
-<div align="center">
-    <img src="images/ksqldb-1.png" width=75% height=75%>
-</div>
-
-<div align="center">
-    <img src="images/ksqldb-2.png" width=75% height=75%>
-</div>
-
-
-3. Next, go to the **Streams** tab at the top and click on **STOCKS_STREAM**. This provides information on the stream, output topic (including replication, partitions, and key and value serialization), and schemas.
-
-<div align="center">
-    <img src="images/stream-detail.png" width=50% height=50%>
-</div>
-
-4. Click on **Query Stream** which will take you back to the **Editor**. You will see the following query auto-populated in the editor which may be already running by default. If not, click on **Run query**. To see data already in the topic, you can set the `auto.offset.reset=earliest` property before clicking **Run query**. <br> <br> Optionally, you can navigate to the editor and construct the select statement on your own, which should look like the following.
-
-```sql
-SELECT * FROM STOCKS_STREAM EMIT CHANGES;
+```
+SHOW DATABASES;
 ```
 
-5. You should see the following data within your **STOCKS_STREAM** stream.
-
+```sql
+SHOW TABLES;
+```
 <div align="center">
-    <img src="images/stock-stream-select-query.gif" width=75% height=75%>
+    <img src="images/show-tables.png" width=75% height=75%>
 </div>
 
-6. Click **Stop**. 
-7. Next, create a **Table** by registering the **users_topic** as a table named **users**. Copy the following code into the **Editor** and click **Run**. 
+Understand how the table `stocks_topic` was created:
 
 ```sql
-CREATE TABLE users (
-    userid varchar PRIMARY KEY, 
-    registertime bigint, 
-    gender varchar, 
-    regionid varchar
-) 
-WITH (KAFKA_TOPIC='users_topic', VALUE_FORMAT='AVRO');
+SHOW CREATE TABLE stocks_topic;
 ```
 
-8. Once you have created the **USERS** table, repeat what you did above with **STOCKS_STREAMS** and query the **USERS** table. This time, select the **Tables** tab and then select the **USERS** table. You can also set the `auto.offset.reset=earliest`. Like above, if you prefer to construct the statement on your own, make sure it looks like the following. 
+You can find more information about all DDL Statements [here.](https://docs.confluent.io/cloud/current/flink/reference/statements/overview.html)
 
+Let us first check the table schema for our `stocks_topic` catalog. This should be the same as the topic schema in Schema Registry.
 ```sql
-SELECT * FROM USERS EMIT CHANGES;
+DESCRIBE stocks_topic;
 ```
 
- * You should see the following data in the messages output.
+2. Let's check if any product records exist in the table.
+```sql
+SELECT * FROM stocks_topic;
+```
 
-<div align="center">
-    <img src="images/users-table-select-results.png" width=75% height=75%>
-</div>
+3. Check if the `users_topic` schema  exists. 
+```sql
+DESCRIBE users_topic;
+```
 
-> **Note:** Note: If the output does not show up immediately, you may have done everything correctly and it just needs a moment. Setting `auto.offset.reset=earliest` also helps output data faster since the messages are already in the topics.
+4. Check the customers in Texas whose name start with `B`.
+```sql
+SELECT * FROM users_topic
+  WHERE `userid` = 'User_8' AND `gender` LIKE 'MA%';
+```
 
-9. Stop the query by clicking **Stop**. 
+5. Check the first five stocks trades for one customer.
+```sql
+SELECT side,
+       quantity,
+       symbol,
+       $rowtime AS ingestion_time
+  FROM stocks_topic
+  WHERE userid = 'User_8'
+  LIMIT 5;
+```
+
+
+6. Find the message timestamps for all stocks trades of one user.
+```sql
+SELECT side,
+       quantity,
+       symbol,
+       $rowtime AS ingestion_time
+  FROM stocks_topic
+  WHERE userid = 'User_8';
+```
+
+
+7. Enrich Stocks Trades information with Users Topic. Create a new table for enriched order information..
+```sql
+CREATE TABLE stocks_trades_enriched_user_detail(
+  userid STRING,
+  regionid STRING, 
+  gender STRING, 
+  side STRING, 
+  quantity INT, 
+  symbol STRING, 
+  price INT, 
+  account STRING
+) WITH (
+    'kafka.partitions' = '3',
+    'changelog.mode' = 'retract'
+);
+```
+
+8. Insert joined data from 2 tables into the new table.
+```sql
+INSERT INTO stocks_trades_enriched_user_detail
+     SELECT ut.userid AS userid, 
+           regionid, 
+           gender, 
+           side, 
+           quantity, 
+           symbol, 
+           price, 
+           account
+    FROM stocks_topic st
+    LEFT JOIN users_topic ut
+    ON st.userid = ut.userid;
+```
+9. Check the enriched table by running this query.
+```sql
+select * from stocks_trades_enriched_user_detail;
+```
 
 ***
 
