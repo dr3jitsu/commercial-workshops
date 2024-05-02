@@ -617,6 +617,26 @@ Select * from  accounts_to_monitor;
 ``` 
 ***
 
+## <a name="step-11"></a>Check Flink Queries
+
+Building on our Fraud Detection example from the last step, let’s say our fraud service wants to check on high frequency accounts. Then we can monitor the activity for a suspicious account. 
+
+
+1. In the Flink Statement Editor. We run this query in the Editor to see how our accounts are behaving.  
+
+```sql
+SELECT * FROM ACCOUNTS_TO_MONITOR
+     WHERE QUANTITY > 100;
+```
+2. Once we have identified a potential troublemaker, we can create an ephemeral push query to monitor future trades from our **STOCKS_ENRICHED** stream. This will continue to push trades to the fraud service for further analysis until it is stopped. 
+
+```sql
+SELECT * FROM STOCKS_ENRICHED 
+	WHERE ACCOUNT = 'ABC123'
+	EMIT CHANGES;
+```
+
+***
 
 ## <a name="step-12"></a>Connect BigQuery sink to Confluent Cloud
 
