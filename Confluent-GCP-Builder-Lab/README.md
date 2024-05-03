@@ -106,7 +106,12 @@ An environment contains clusters and its deployed components such as Apache Flin
 </div>
 
 6. Click **Begin Configuration**. 
-7. Choose GCP as Cloud Provider and your preferred, region, and availability zone accordingly. 
+7. Choose GCP as Cloud Provider and your preferred, region (Singapore/ asia-southeast1) , and Uptime SLA is default. 
+
+<div align="center" padding=25px>
+    <img src="images/cluster-region.png" width=50% height=50%>
+</div>
+
 8. Specify a **Cluster Name**. For the purpose of this lab, any name will work here. 
 
 <div align="center" padding=25px>
