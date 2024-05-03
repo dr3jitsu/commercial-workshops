@@ -13,7 +13,7 @@
 4. [Create Topics and walk through Confluent Cloud Dashboard](#step-4)
 5. [Create an API Key Pair](#step-5)
 6. [Create Datagen Connectors for Users and Stocks](#step-6)
-7. [Flink Basics](#step-7)
+7. [Flink Queries](#step-7)
 8. [Flink Aggregations](#step-8)
 9. [Flink Windowing Functions](#step-9)
 10. [Fraud Detection](#step-10)
@@ -307,7 +307,7 @@ The next step is to produce sample data using the Datagen Source connector. You 
 
 ***
 
-## <a name="step-7"></a>Flink Basics
+## <a name="step-7"></a>Flink Queries
 Kafka topics and schemas are always in sync with our Flink cluster. Any topic created in Kafka is visible directly as a table in Flink, and any table created in Flink is visible as a topic in Kafka. Effectively, Flink provides a SQL interface on top of Confluent Cloud.
 
 Following mappings exist:
