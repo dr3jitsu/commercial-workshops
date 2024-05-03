@@ -625,15 +625,14 @@ Building on our Fraud Detection example from the last step, let’s say our frau
 1. In the Flink Statement Editor. We run this query in the Editor to see how our accounts are behaving.  
 
 ```sql
-SELECT * FROM ACCOUNTS_TO_MONITOR
+SELECT * FROM accounts_to_monitor
      WHERE QUANTITY > 100;
 ```
 2. Once we have identified a potential troublemaker, we can create an ephemeral push query to monitor future trades from our **STOCKS_ENRICHED** stream. This will continue to push trades to the fraud service for further analysis until it is stopped. 
 
 ```sql
-SELECT * FROM STOCKS_ENRICHED 
-	WHERE ACCOUNT = 'ABC123'
-	EMIT CHANGES;
+SELECT * FROM stocks_trades_enriched_user_detail 
+	WHERE ACCOUNT = 'ABC123';
 ```
 
 ***
