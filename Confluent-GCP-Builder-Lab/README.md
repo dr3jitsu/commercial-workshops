@@ -516,7 +516,7 @@ FROM stocks_topic
 WHERE side = 'BUY'
 GROUP BY symbol
 ```
-11. Check the result by running query to the total_stock_purchased table. 
+11. Add Flink Statement windows by click (+). Check the result by running query to the total_stock_purchased table. 
 ```sql
 select * from total_stock_purchased;
 ```
