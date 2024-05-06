@@ -484,7 +484,7 @@ FROM stocks_topic
 WHERE side = 'BUY'
 GROUP BY symbol
 ```
-7. Running query to the number_of_times_stock_bought table. 
+7. Add Flink Statement windows by click (+). Running query to the number_of_times_stock_bought table. 
 ```sql
 select * from number_of_times_stock_bought;
 ```
@@ -587,7 +587,7 @@ FROM TABLE(
 GROUP BY symbol,window_end,window_start;
 ```
 
-3. Once you have created the windowed table, and you have inserted the data , use the Flink Workspace to query the table. If you construct the statement on your own, make sure it looks like the following..
+3. Add Flink Statement windows by click (+). Once you have created the windowed table, and you have inserted the data , use the Flink Workspace to query the table. If you construct the statement on your own, make sure it looks like the following..
 ```sql
 select * from stocks_purchased_today
 ```
@@ -616,7 +616,7 @@ FROM TABLE(
 GROUP BY window_end,window_start,account
 HAVING COUNT(*)>10;
 ```
-6. Verify the result.
+6. Add Flink Statement windows by click (+). Verify the result.
   ```sql
 Select * from  accounts_to_monitor;
 ``` 
