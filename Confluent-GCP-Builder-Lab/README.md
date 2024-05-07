@@ -630,7 +630,7 @@ Building on our Fraud Detection example from the last step, let’s say our frau
 1. In the Flink Statement Editor. We run this query in the Editor to see how our accounts are behaving.  
 
 ```sql
-SELECT * FROM accounts_to_monitor
+SELECT * FROM accounts_to_monitor_XXX
      WHERE QUANTITY > 100;
 ```
 2. Once we have identified a potential troublemaker, we can create an ephemeral push query to monitor future trades from our **STOCKS_ENRICHED** stream. This will continue to push trades to the fraud service for further analysis until it is stopped. 
@@ -658,7 +658,7 @@ The next step is to sink data from Confluent Cloud into BigQuery using the [full
 
 | Setting                | Value                              |
 |------------------------|------------------------------------|
-| `Topics`               | accounts_to_monitor                |
+| `Topics`               | accounts_to_monitor_XXX                |
 | `Name`                 | BigQueryStorageSinkConnector_accounts_to_monitor    |
 | `Input message format` | Avro                               |
 | `Kafka API Key`        | From step 5                        |
