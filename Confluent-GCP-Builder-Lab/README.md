@@ -592,9 +592,9 @@ GROUP BY symbol,window_end,window_start;
 select * from stocks_purchased_today
 ```
 
-4. Going along with the theme of fraud detection, create a table named accounts_to_monitor with accounts to monitor based on their activity during a given time frame. In the Flink Workspace , paste the following statement and run the query.
+4. Going along with the theme of fraud detection, create a table named accounts_to_monitor with accounts to monitor based on their activity during a given time frame. In the Flink Workspace , paste the following statement and run the query. Change XXX with your random number.
 ```sql
-CREATE TABLE accounts_to_monitor(
+CREATE TABLE accounts_to_monitor_XXX(
   window_start TIMESTAMP,
   window_end TIMESTAMP,
   account STRING,
@@ -606,7 +606,7 @@ CREATE TABLE accounts_to_monitor(
 ```
 5. Insert data into the new table created above.
 ```sql
-INSERT INTO accounts_to_monitor
+INSERT INTO accounts_to_monitor_XXX
 SELECT window_start,
   window_end,
   account,     
@@ -618,7 +618,7 @@ HAVING COUNT(*)>10;
 ```
 6. Add Flink Statement windows by click (+). Verify the result.
   ```sql
-Select * from  accounts_to_monitor;
+Select * from  accounts_to_monitor_XXX;
 ``` 
 ***
 
