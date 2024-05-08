@@ -658,29 +658,24 @@ The next step is to sink data from Confluent Cloud into BigQuery using the [full
 
 | Setting                | Value                              |
 |------------------------|------------------------------------|
+| `Topics `              | accounts_to_monitor_XXX            |
+| `Kafka API Key`        | From step 5                        |
+| `Kafka API Secret`     | From step 5                        |
 | `Authentication method`| Google cloud service account       |
-| `GCP Credential file1  | Upload your_gcp_credential_json_file |
+| `GCP Credential file`  | Upload your_gcp_credential_json_file |
 | `Project ID `          | your_project_ID                    |
-| `Dataset`		 | accounts_to_monitor_XXX            |
+| `Dataset`		 | accounts_to_monitor                |
 | `Topic `               | accounts_to_monitor_XXX            |
 | `Ingestion Mode`       | streaming                          |
+| `Input Kafka format`   | AVRO                               |
 | `Sanitze topics `      | true                               |
 | `Sanitize field name`  | true                               |
 | `Auto create table`    | PARTITION by INGESTION TIME        |
 | `Partitioning type`    | DAY                                |
 | `Max poll interval (ms)`| 60000                              |
-| `Name`                 | BigQueryStorageSinkConnector_accounts_to_monitor    |
-| `Input message format` | Avro                               |
-| `Kafka API Key`        | From step 5                        |
-| `Kafka API Secret`     | From step 5                        |
-| `GCP credentials file` | Upload_your_GCP_Credentials_file   |
-| `Project ID`           | your_GCP_project_ID                |
-| `Dataset`              | your_GCP_dataset_name              |
-| `Sanitize topics`      | true                               |
-| `Sanitize field names` | true                               |
-| `Auto create tables`   | PARTITION by INGESTION TIME        |
-| `Partitioning type`    | DAY                                |
 | `Tasks`                | 1                                  |
+| `Name`                 | BigQueryStorageSinkConnector_accounts_to_monitor    |
+
 
 </div>
 
