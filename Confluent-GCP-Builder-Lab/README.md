@@ -631,13 +631,13 @@ Building on our Fraud Detection example from the last step, let’s say our frau
 
 ```sql
 SELECT * FROM accounts_to_monitor_XXX
-     WHERE QUANTITY > 100;
+     WHERE quantity > 100;
 ```
 2. Once we have identified a potential troublemaker, we can create an ephemeral push query to monitor future trades from our **STOCKS_ENRICHED** stream. This will continue to push trades to the fraud service for further analysis until it is stopped. 
 
 ```sql
 SELECT * FROM stocks_trades_enriched_user_detail 
-	WHERE ACCOUNT = 'ABC123';
+	WHERE account = 'ABC123';
 ```
 
 ***
