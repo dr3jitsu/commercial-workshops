@@ -658,7 +658,17 @@ The next step is to sink data from Confluent Cloud into BigQuery using the [full
 
 | Setting                | Value                              |
 |------------------------|------------------------------------|
-| `Topics`               | accounts_to_monitor_XXX                |
+| `Authentication method`| Google cloud service account       |
+| `GCP Credential file1  | Upload your_gcp_credential_json_file |
+| `Project ID `          | your_project_ID                    |
+| `Dataset`		 | accounts_to_monitor_XXX            |
+| `Topic `               | accounts_to_monitor_XXX            |
+| `Ingestion Mode`       | streaming                          |
+| `Sanitze topics `      | true                               |
+| `Sanitize field name`  | true                               |
+| `Auto create table`    | PARTITION by INGESTION TIME        |
+| `Partitioning type`    | DAY                                |
+| `Max poll interval (ms)`| 60000                              |
 | `Name`                 | BigQueryStorageSinkConnector_accounts_to_monitor    |
 | `Input message format` | Avro                               |
 | `Kafka API Key`        | From step 5                        |
