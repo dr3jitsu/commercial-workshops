@@ -665,7 +665,6 @@ The next step is to sink data from Confluent Cloud into BigQuery using the [full
 | `GCP Credential file`  | Upload your_gcp_credential_json_file |
 | `Project ID `          | your_project_ID                    |
 | `Dataset`		 | accounts_to_monitor                |
-| `Topic `               | accounts_to_monitor_XXX            |
 | `Ingestion Mode`       | streaming                          |
 | `Input Kafka format`   | AVRO                               |
 | `Sanitze topics `      | true                               |
