@@ -311,69 +311,39 @@ INSERT INTO equipment VALUES
 ```
 You’ll notice the new topics have been created.
 
-### 7.2 Rekey topics (create PK) + insert data
-We’ll rekey each topic to establish a primary key for joins (Datagen didn’t set PKs).
+### 7.2 Enrich: Equipment + Mines
+Table **Equipment** and join with **Mines**.
 
-**Credit Score:**
-```sql
-CREATE TABLE credit_score_rekeyed (
-  customer_email STRING NOT NULL PRIMARY KEY NOT ENFORCED,
-  income_type STRING,
-  credit_score INT,
-  credit_usage_percentage INT,
-  credit_limit_idr INT
-) DISTRIBUTED BY (customer_email) INTO 1 BUCKETS
-WITH ('changelog.mode' = 'upsert');
-```
-```sql
-INSERT INTO credit_score_rekeyed
-SELECT
-  customer_email,
-  income_type,
-  credit_score,
-  credit_usage_percentage,
-  credit_limit_idr
-FROM `credit_score`;
-```
 
-**Mortgage Application:**
 ```sql
-CREATE TABLE mortgage_application_rekeyed (
-  application_id INT NOT NULL PRIMARY KEY NOT ENFORCED,
-  customer_email STRING,
-  mortgage_value INT,
-  mortgage_type STRING
-) DISTRIBUTED BY (application_id) INTO 1 BUCKETS
-WITH ('changelog.mode' = 'upsert');
+CREATE TABLE equipmentwithmines (
+  equipment_id INT,
+  mine_id INT,
+  mine_name STRING,
+  location STRING,
+  mineral_type STRING,
+  capacity_tons BIGINT,
+  eq_type STRING,
+  eq_model STRING,
+  status STRING
+)DISTRIBUTED BY (equipment_id) INTO 1 BUCKETS
+WITH ('changelog.mode' = 'append');
 ```
 ```sql
-INSERT INTO mortgage_application_rekeyed
+INSERT INTO equipmentwithmines
 SELECT
-  application_id,
-  customer_email,
-  mortgage_value,
-  mortgage_type
-FROM mortgage_application;
-```
-
-**Payment History:**
-```sql
-CREATE TABLE payment_history_rekeyed (
-  customer_email STRING NOT NULL PRIMARY KEY NOT ENFORCED,
-  payment_month_year BIGINT,
-  amount_idr BIGINT,
-  application_id INT
-) DISTRIBUTED BY (customer_email) INTO 1 BUCKETS
-WITH ('changelog.mode' = 'upsert');
-```
-```sql
-INSERT INTO payment_history_rekeyed
-SELECT
-  customer_email,
-  payment_month_year,
-  amount_idr,
-  application_id
-FROM payment_history;
+  e.equipment_id,
+  e.mine_id,
+  m.mine_name,
+  m.location,
+  m.mineral_type,
+  m.capacity_tons,
+  e.eq_type,
+  e.eq_model,
+  e.status
+FROM equipment e
+INNER JOIN mines m
+  ON e.mine_id = m.mine_id;
 ```
 
 ### 7.3 CTAS Example: Deduplicate Credit Score
