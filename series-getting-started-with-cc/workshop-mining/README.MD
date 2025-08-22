@@ -371,9 +371,9 @@ SELECT
     END AS vibration_alert,
     s.fuel_rate_lph
 FROM `sensordata` s
-JOIN equipment e
+LEFT JOIN equipment e
     ON CAST(s.equipment_id AS INT) = e.equipment_id
-JOIN mines m
+LEFT JOIN mines m
     ON e.mine_id = m.mine_id;
 ```
 XXXXXXXXX
