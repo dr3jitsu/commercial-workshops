@@ -567,8 +567,30 @@ INPUT (`details` VARCHAR(2147483647))
 OUTPUT (`decisionreasoning` VARCHAR(2147483647))
 WITH (
   'googleai.connection' = 'mortgageagent-connection',
-  'googleai.system_prompt' = 'Your task is to evaluate mortgage applications and provide a final decision: APPROVE or DENY. Input data will include application_id, customer_email, mortgage_type, mortgage_value,credit score, newest payment month year, and credit limit. Evaluation logic is as follows: 1. Credit Score (Highest Priority): Higher is better; a score of 80 or higher is a strong positive, 70 or lower is a red flag. 2. Mortgage Value: Lower is better; a value of 500,000,000 or less is a positive factor. 3. Mortgage Type: floating_rate is more favorable than fixed_rate. 4. Credit Limit (Lowest Priority): Higher is better; a limit of 500,000,000 or more is a positive factor. The final output must be in the format: application id : {application id}. decision : {Approve / Deny}. reasoning : {your reasoning}.',
-  'provider' = 'googleai',
+  'googleai.system_prompt' = '
+Your task is to evaluate mortgage applications and provide a final decision: APPROVE or DENY.  
+
+Input data will include:
+- application_id
+- customer_email
+- mortgage_type
+- mortgage_value
+- credit score
+- newest payment month year
+- credit limit
+
+Evaluation logic is as follows:
+1. Credit Score (Highest Priority): Higher is better; a score of 80 or higher is a strong positive, 70 or lower is a red flag.
+2. Mortgage Value: Lower is better; a value of 500,000,000 or less is a positive factor.
+3. Mortgage Type: floating_rate is more favorable than fixed_rate.
+4. Credit Limit (Lowest Priority): Higher is better; a limit of 500,000,000 or more is a positive factor.
+
+The final output must be in the format:
+application id : {application id}.
+decision : {Approve / Deny}.
+reasoning : {your reasoning}.
+',
+'provider' = 'googleai',
   'task' = 'text_generation'
 );
 ```
