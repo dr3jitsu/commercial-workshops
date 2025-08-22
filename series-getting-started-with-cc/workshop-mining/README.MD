@@ -130,146 +130,145 @@ You’ll create a **Datagen Source** connector per topic to continuously generat
 > - **Tasks:** `1` (default is fine).
 > - **Name** each connector appropriately.
 
-### 6.1 Credit_Score Connector
-- **Topic Selection:** `credit_score`
-- **Name:** `credit_score`
+### 6.1 SensorData Connector
+- **Topic Selection:** `sensordata`
+- **Name:** `sensordata`
 
 **Schema:**
 ```json
 {
   "type": "record",
-  "name": "CreditScore",
-  "namespace": "demo",
+  "name": "sensordata",
+  "namespace": "mining.demo",
   "fields": [
     {
-      "name": "customer_email",
+      "name": "sensordata_id",
+      "type": {
+        "type": "int",
+        "arg.properties": {
+          "auto.increment": true,
+          "start": 1001
+        }
+      }
+    },
+    {
+      "name": "equipment_id",
       "type": {
         "type": "string",
         "arg.properties": {
           "options": [
-            "alex.jose@gmail.com",
-            "james.joe@gmail.com",
-            "john.doe@gmail.com",
-            "lisa.kudrow@gmail.com",
-            "jeniffer.aniston@gmail.com",
-            "ross.geller@gmail.com",
-            "joey.tribbiani@gmail.com",
-            "courtney.cox@gmail.com"
+            "101", "102", "103",
+            "201", "202",
+            "301", "302",
+            "401",
+            "501", "502"
           ]
         }
       }
     },
     {
-      "name": "income_type",
+      "name": "timestamp",
+      "type": "string",
+      "arg.properties": {
+        "format": "yyyy-MM-dd HH:mm:ss"
+      }
+    },
+    {
+      "name": "temperature_c",
       "type": {
-        "type": "string",
+        "type": "float",
         "arg.properties": {
-          "options": [
-            "Regular/Monthly",
-            "Quarterly",
-            "Annual",
-            "Infrequent"
-          ]
+          "range": { "min": -20.0, "max": 120.0 }
         }
       }
     },
     {
-      "name": "credit_score",
+      "name": "vibration_level",
       "type": {
-        "type": "int",
+        "type": "float",
         "arg.properties": {
-          "range": { "min": 50, "max": 100 }
+          "range": { "min": 0.0, "max": 1.0 }
         }
       }
     },
     {
-      "name": "credit_usage_percentage",
+      "name": "fuel_rate_lph",
       "type": {
-        "type": "int",
+        "type": "float",
         "arg.properties": {
-          "range": { "min": 0, "max": 100 }
-        }
-      }
-    },
-    {
-      "name": "credit_limit_idr",
-      "type": {
-        "type": "int",
-        "arg.properties": {
-          "range": {
-            "min": 100000000,
-            "max": 1000000000,
-            "step": 1000000
-          }
+          "range": { "min": 0.0, "max": 500.0 }
         }
       }
     }
   ]
 }
+
 ```
 
-### 6.2 Mortgage_Application Connector
-- **Topic Selection:** `mortgage_application`
-- **Name:** `mortgage_application`
+### 6.2 ProductionStream Connector
+- **Topic Selection:** `productionstream`
+- **Name:** `productionstream`
 
 **Schema:**
 ```json
 {
   "type": "record",
-  "name": "MortgageApplication",
-  "namespace": "demo",
+  "name": "productionstream",
+  "namespace": "mining.demo",
   "fields": [
     {
-      "name": "application_id",
+      "name": "production_id",
       "type": {
         "type": "int",
         "arg.properties": {
-          "iteration": { "start": 100, "max": 150 }
+          "auto.increment": true,
+          "start": 1001
         }
       }
     },
     {
-      "name": "customer_email",
+      "name": "equipment_id",
       "type": {
         "type": "string",
         "arg.properties": {
           "options": [
-            "alex.jose@gmail.com",
-            "james.joe@gmail.com",
-            "john.doe@gmail.com",
-            "lisa.kudrow@gmail.com",
-            "jeniffer.aniston@gmail.com",
-            "ross.geller@gmail.com",
-            "joey.tribbiani@gmail.com",
-            "courtney.cox@gmail.com"
+            "101", "102", "103",
+            "201", "202",
+            "301", "302",
+            "401",
+            "501", "502"
           ]
         }
       }
     },
     {
-      "name": "mortgage_value",
+      "name": "timestamp",
+      "type": "string",
+      "arg.properties": {
+        "format": "yyyy-MM-dd HH:mm:ss"
+      }
+    },
+    {
+      "name": "ore_tons",
       "type": {
-        "type": "int",
+        "type": "float",
         "arg.properties": {
-          "range": {
-            "min": 100000000,
-            "max": 1000000000,
-            "step": 1000000
-          }
+          "range": { "min": 0.1, "max": 50.0 }
         }
       }
     },
     {
-      "name": "mortgage_type",
+      "name": "mineral_grade_pct",
       "type": {
-        "type": "string",
+        "type": "float",
         "arg.properties": {
-          "options": ["fixed_rate", "adjustable_rate"]
+          "range": { "min": 0.1, "max": 100.0 }
         }
       }
     }
   ]
 }
+
 ```
 
 ### 6.3 Payment_History Connector
