@@ -97,9 +97,9 @@ https://docs.confluent.io/confluent-cli/current/install.html
 ## Step 5 — Create Kafka Topics
 Create three topics (Partitions: `1` for each):
 
-- `Credit_Score`
-- `Mortgage_Application`
-- `Payment_History`
+- `credit_score`
+- `mortgage_application`
+- `payment_history`
 
 **UI path:** Cluster → **Topics** → **+ Add Topic** → fill in details → **Create with defaults**.
 
@@ -119,7 +119,7 @@ You’ll create a **Datagen Source** connector per topic to continuously generat
 > - **Name** each connector appropriately.
 
 ### 6.1 Credit_Score Connector
-- **Topic Selection:** `Credit_Score`
+- **Topic Selection:** `credit_score`
 - **Name:** `credit_score`
 
 **Schema:**
@@ -197,7 +197,7 @@ You’ll create a **Datagen Source** connector per topic to continuously generat
 ```
 
 ### 6.2 Mortgage_Application Connector
-- **Topic Selection:** `Mortgage_Application`
+- **Topic Selection:** `mortgage_application`
 - **Name:** `mortgage_application`
 
 **Schema:**
@@ -261,7 +261,7 @@ You’ll create a **Datagen Source** connector per topic to continuously generat
 ```
 
 ### 6.3 Payment_History Connector
-- **Topic Selection:** `Payment_History`
+- **Topic Selection:** `payment_histor`
 - **Name:** `payment_history`
 
 **Schema:**
@@ -355,7 +355,8 @@ CREATE TABLE credit_score_rekeyed (
   credit_limit_idr INT
 ) DISTRIBUTED BY (customer_email) INTO 1 BUCKETS
 WITH ('changelog.mode' = 'upsert');
-
+```
+```sql
 INSERT INTO credit_score_rekeyed
 SELECT
   customer_email,
@@ -375,7 +376,8 @@ CREATE TABLE mortgage_application_rekeyed (
   mortgage_type STRING
 ) DISTRIBUTED BY (application_id) INTO 1 BUCKETS
 WITH ('changelog.mode' = 'upsert');
-
+```
+```sql
 INSERT INTO mortgage_application_rekeyed
 SELECT
   application_id,
@@ -390,11 +392,12 @@ FROM mortgage_application;
 CREATE TABLE payment_history_rekeyed (
   customer_email STRING NOT NULL PRIMARY KEY NOT ENFORCED,
   payment_month_year BIGINT,
-  amount_idr INT,
+  amount_idr BIGINT,
   application_id INT
 ) DISTRIBUTED BY (customer_email) INTO 1 BUCKETS
 WITH ('changelog.mode' = 'upsert');
-
+```
+```sql
 INSERT INTO payment_history_rekeyed
 SELECT
   customer_email,
