@@ -95,27 +95,14 @@ https://docs.confluent.io/confluent-cli/current/install.html
 ---
 
 ## Step 5 — Create Kafka Topics
-Create three topics (Partitions: `1` for each):
+Create 2 topics (Partitions: `1` for each):
 
-- `mines`
-- `equipments`
 - `sensordata`
 - `productionstream`
 
 **UI path:** Cluster → **Topics** → **+ Add Topic** → fill in details → **Create with defaults**.
 
 ---
-
-### Step 5.1 — Create Data Contract and Insert records into topics
-
-- `mines`
-- `equipments`
-
-
-**UI path:** Cluster → **Topics** → **+ Add Topic** → fill in details → **Create with defaults**.
-
----
-
 
 ## Step 6 — Create Datagen Source Connectors (2x)
 You’ll create a **Datagen Source** connector per topic to continuously generate realistic sample data.
@@ -283,6 +270,54 @@ Once all three connectors are running, you should see data flowing into the topi
    - **Catalog:** your **Environment**
    - **Database:** your **Kafka Cluster**
 4. Put **each query in a separate query tab/box** (click the **+** icon per query).
+5. Create table mines in query tab.
+```sql
+CREATE TABLE mines (
+  mine_id INT,
+  mine_name STRING,
+  location STRING,
+  mineral_type STRING,
+  capacity_tons INT,
+  PRIMARY KEY (mine_id) NOT ENFORCED
+);
+```
+
+6. Insert Records to table mines
+```sql
+INSERT INTO mines VALUES
+  (1, 'Grasberg Mine', 'Papua, ID', 'Copper/Gold', 2000000),
+  (2, 'Escondida', 'Chile', 'Copper', 1800000),
+  (3, 'Carajás Mine', 'Pará, Brazil', 'Iron Ore', 1500000),
+  (4, 'Khewra Mine', 'Punjab, Pakistan', 'Rock Salt', 800000),
+  (5, 'Kiruna Mine', 'Kiruna, Sweden', 'Iron Ore', 1000000);
+```
+7. Create table equipment
+```sql
+CREATE TABLE equipment (
+  equipment_id INT,
+  mine_id INT,
+  eq_type STRING,
+  eq_model STRING,
+  status STRING,
+  PRIMARY KEY (equipment_id) NOT ENFORCED
+); 
+```
+
+8. Insert Records to table equipment
+```sql
+INSERT INTO equipment VALUES
+  (101, 1, 'Haul Truck', 'CAT 793F', 'Active'),
+  (102, 1, 'Excavator', 'Hitachi EX5600', 'Active'),
+  (103, 1, 'Crusher', 'Metso C200', 'Under Maint'),
+  (201, 2, 'Drill Rig', 'Sandvik D45', 'Active'),
+  (202, 2, 'Haul Truck', 'Komatsu 930E', 'Active'),
+  (301, 3, 'Conveyor Belt', 'ThyssenKrupp', 'Active'),
+  (302, 3, 'Excavator', 'Liebherr R9800', 'Active'),
+  (401, 4, 'Loader', 'CAT 992K', 'Active'),
+  (501, 5, 'Drill Rig', 'Atlas Copco DML', 'Active'),
+  (502, 5, 'Haul Truck', 'Volvo R100E', 'Under Maint');
+```
+You’ll notice the new topics have been created.
 
 ### 7.2 Rekey topics (create PK) + insert data
 We’ll rekey each topic to establish a primary key for joins (Datagen didn’t set PKs).
