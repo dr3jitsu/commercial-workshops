@@ -97,15 +97,27 @@ https://docs.confluent.io/confluent-cli/current/install.html
 ## Step 5 — Create Kafka Topics
 Create three topics (Partitions: `1` for each):
 
-- `credit_score`
-- `mortgage_application`
-- `payment_history`
+- `mines`
+- `equipments`
+- `sensordata`
+- `productionstream`
 
 **UI path:** Cluster → **Topics** → **+ Add Topic** → fill in details → **Create with defaults**.
 
 ---
 
-## Step 6 — Create Datagen Source Connectors (3x)
+### Step 5.1 — Create Data Contract and Insert records into topics
+
+- `mines`
+- `equipments`
+
+
+**UI path:** Cluster → **Topics** → **+ Add Topic** → fill in details → **Create with defaults**.
+
+---
+
+
+## Step 6 — Create Datagen Source Connectors (2x)
 You’ll create a **Datagen Source** connector per topic to continuously generate realistic sample data.
 
 **UI path:** Cluster → **Connectors** → **+ Add Connector** → **Sample Data – Datagen Source** → configure.
