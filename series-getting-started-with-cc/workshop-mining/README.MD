@@ -317,7 +317,7 @@ Table **Equipment** and join with **Mines**.
 
 ```sql
 CREATE TABLE equipmentwithmines (
-  equipment_id INT,
+  equipment_id INT PRIMARY KEY NOT ENFORCED,
   mine_id INT,
   mine_name STRING,
   location STRING,
@@ -327,7 +327,7 @@ CREATE TABLE equipmentwithmines (
   eq_model STRING,
   status STRING
 )DISTRIBUTED BY (equipment_id) INTO 1 BUCKETS
-WITH ('changelog.mode' = 'append');
+WITH ('changelog.mode' = 'upsert');
 ```
 ```sql
 INSERT INTO equipmentwithmines
