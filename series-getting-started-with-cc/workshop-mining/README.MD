@@ -157,13 +157,6 @@ You’ll create a **Datagen Source** connector per topic to continuously generat
       }
     },
     {
-      "name": "timestamp",
-      "type": "string",
-      "arg.properties": {
-        "format": "yyyy-MM-dd HH:mm:ss"
-      }
-    },
-    {
       "name": "temperature_c",
       "type": {
         "type": "float",
@@ -232,13 +225,6 @@ You’ll create a **Datagen Source** connector per topic to continuously generat
             "501", "502"
           ]
         }
-      }
-    },
-    {
-      "name": "timestamp",
-      "type": "string",
-      "arg.properties": {
-        "format": "yyyy-MM-dd HH:mm:ss"
       }
     },
     {
