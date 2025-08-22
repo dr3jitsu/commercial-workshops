@@ -376,63 +376,62 @@ LEFT JOIN equipment e
 LEFT JOIN mines m
     ON e.mine_id = m.mine_id;
 ```
-XXXXXXXXX
 
 
-### 7.4 Enrich: Payments + Credit Score
-Aggregate **Payment History** and join with the deduped **Credit Score**.
 
-1. Change the changelog mode of `payment_history_rekeyed` to **append**:
+### 7.4 Enrich: CTAS Equipment Performance
+
+This Flink SQL query creates a denormalized, aggregated table EquipmentPerformance that combines data from equipment, mines, sensordata, and productionstream. It calculates per-equipment metrics, including total ore mined, average mineral grade, fuel efficiency, average sensor readings, and vibration alert counts. The query uses joins to include mine information, handles nullable columns with COALESCE, and aggregates the streaming data using SUM, AVG, and COUNT. The resulting table provides a real-time overview of equipment performance for monitoring, analytics, or AI applications.
 ```sql
-ALTER TABLE payment_history_rekeyed SET ('changelog.mode' = 'append');
-```
-
-2. Create **`enriched_topic_credit_payment_history`** (CTAS):  
-   - Counts and sums payments per user  
-   - Converts latest payment epoch to `yyyy-MM` string  
-   - Left joins credit score details
-```sql
-CREATE TABLE enriched_topic_credit_payment_history (
-  customer_email STRING NOT NULL PRIMARY KEY NOT ENFORCED,
-  payment_count BIGINT,
-  total_payment BIGINT,
-  newest_payment_month_year STRING,
-  income_type STRING,
-  credit_score INT,
-  credit_usage_percentage INT,
-  credit_limit_idr INT
-) WITH ('changelog.mode' = 'upsert')
-AS
-WITH payment_agg AS (
-  SELECT
-    customer_email,
-    COUNT(*) AS payment_count,
-    SUM(amount_idr) AS total_payment,
-    MAX(payment_month_year) AS latest_payment_epoch
-  FROM payment_history_rekeyed
-  GROUP BY customer_email
-),
-enriched_payment AS (
-  SELECT
-    customer_email,
-    payment_count,
-    total_payment,
-    DATE_FORMAT(TO_TIMESTAMP_LTZ(latest_payment_epoch, 3), 'yyyy-MM') AS newest_payment_month_year
-  FROM payment_agg
-)
+CREATE TABLE EquipmentPerformance AS
 SELECT
-  ep.customer_email,
-  ep.payment_count,
-  ep.total_payment,
-  ep.newest_payment_month_year,
-  cs.income_type,
-  cs.credit_score,
-  cs.credit_usage_percentage,
-  cs.credit_limit_idr
-FROM enriched_payment ep
-LEFT JOIN credit_score_deduped cs
-ON ep.customer_email = cs.customer_email;
+    e.equipment_id,
+    COALESCE(e.eq_type, 'UNKNOWN') AS equipment_type,
+    e.eq_model AS equipment_model,
+    e.status AS equipment_status,
+    e.mine_id,
+    m.mine_name,
+    m.location,
+    m.mineral_type,
+    m.capacity_tons,
+
+    -- Aggregated metrics
+    SUM(p.ore_tons) AS total_ore_tons,
+    AVG(p.mineral_grade_pct) AS avg_mineral_grade,
+    COUNT(p.production_id) AS production_events,
+    AVG(s.fuel_rate_lph) AS avg_fuel_rate_lph,
+
+    -- Calculated column: fuel efficiency (ore_tons / fuel_rate)
+    SUM(p.ore_tons) / NULLIF(SUM(s.fuel_rate_lph),0) AS fuel_efficiency,
+
+    -- Sensor metrics
+    AVG(s.temperature_c) AS avg_temperature_c,
+    AVG(s.vibration_level) AS avg_vibration_level,
+    SUM(CASE WHEN s.vibration_level > 0.05 THEN 1 ELSE 0 END) AS vibration_alert_count
+
+FROM equipment e
+JOIN mines m
+    ON e.mine_id = m.mine_id
+LEFT JOIN sensordata s
+    ON CAST(s.equipment_id AS INT) = e.equipment_id
+LEFT JOIN productionstream p
+    ON CAST(p.equipment_id AS INT) = e.equipment_id
+
+-- Optional: group by equipment to aggregate metrics
+GROUP BY
+    e.equipment_id,
+    e.eq_type,
+    e.eq_model,
+    e.status,
+    e.mine_id,
+    m.mine_name,
+    m.location,
+    m.mineral_type,
+    m.capacity_tons;
+
 ```
+
+XXXXXXXXX
 
 ### 7.5 Join With Mortgage Applications
 Create a **feed** that combines mortgage applications with the enriched customer profile.
