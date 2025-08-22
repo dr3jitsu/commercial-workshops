@@ -211,8 +211,11 @@ You’ll create a **Datagen Source** connector per topic to continuously generat
       "type": {
         "type": "int",
         "arg.properties": {
-          "auto.increment": true,
-          "start": 1001
+          "range": {
+            "min": 0,
+            "max": 1000000000,
+            "step": 1
+          }
         }
       }
     },
