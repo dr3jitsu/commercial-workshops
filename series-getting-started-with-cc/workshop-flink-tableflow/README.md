@@ -98,13 +98,78 @@ ksqlDB, and Schema Registry.
   "name": "CreditScore",
   "namespace": "demo",
   "fields": [
-    {"name": "customer_email", "type": "string"},
-    {"name": "income_type", "type": "string"},
-    {"name": "credit_score", "type": "int"},
-    {"name": "credit_usage_percentage", "type": "int"},
-    {"name": "credit_limit_idr", "type": "int"}
+    {
+      "name": "customer_email",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "options": [
+            "alex.jose@gmail.com",
+            "james.joe@gmail.com",
+            "john.doe@gmail.com",
+            "lisa.kudrow@gmail.com",
+            "jeniffer.aniston@gmail.com",
+            "ross.geller@gmail.com",
+            "joey.tribbiani@gmail.com",
+            "courtney.cox@gmail.com"
+          ]
+        }
+      }
+    },
+{
+      "name": "income_type",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "options": [
+            "Regular/Monthly",
+            "Quarterly",
+            "Annual",
+            "Infrequent"
+          ]
+        }
+      }
+    },
+{
+      "name": "credit_score",
+      "type": {
+        "type": "int",
+        "arg.properties": {
+          "range": {
+            "min": 50,
+            "max": 100
+          }
+        }
+      }
+    },
+{
+      "name": "credit_usage_percentage",
+      "type": {
+        "type": "int",
+        "arg.properties": {
+          "range": {
+            "min": 0,
+            "max": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "credit_limit_idr",
+      "type": {
+        "type": "int",
+        "arg.properties": {
+          "range": {
+            "min": 100000000,
+            "max": 1000000000,
+"step": 1000000
+          }
+        }
+      }
+    }
   ]
 }
+
 ```
 
 **Mortgage_Application schema:**
@@ -114,12 +179,66 @@ ksqlDB, and Schema Registry.
   "name": "MortgageApplication",
   "namespace": "demo",
   "fields": [
-    {"name": "application_id", "type": "int"},
-    {"name": "customer_email", "type": "string"},
-    {"name": "mortgage_value", "type": "int"},
-    {"name": "mortgage_type", "type": "string"}
+{
+      "name": "application_id",
+      "type": {
+        "type": "int",
+        "arg.properties": {
+          "iteration": {
+            "start" : 100,
+"max" : 150
+          }
+        }
+      }
+},
+{
+      "name": "customer_email",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "options": [
+            "alex.jose@gmail.com",
+            "james.joe@gmail.com",
+            "john.doe@gmail.com",
+            "lisa.kudrow@gmail.com",
+            "jeniffer.aniston@gmail.com",
+            "ross.geller@gmail.com",
+            "joey.tribbiani@gmail.com",
+            "courtney.cox@gmail.com"
+          ]
+        }
+      }
+    },
+
+{
+      "name": "mortgage_value",
+      "type": {
+        "type": "int",
+        "arg.properties": {
+          "range": {
+            "min": 100000000,
+            "max": 1000000000,
+"step": 1000000
+          }
+        }
+      }
+    },
+{
+      "name": "mortgage_type",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "options": [
+            "fixed_rate",
+            "adjustable_rate"
+          ]
+        }
+      }
+    }
   ]
 }
+
+
 ```
 
 **Payment_History schema:**
