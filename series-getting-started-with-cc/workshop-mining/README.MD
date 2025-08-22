@@ -346,30 +346,38 @@ INNER JOIN mines m
   ON e.mine_id = m.mine_id;
 ```
 
-### 7.3 CTAS Example: Deduplicate Credit Score
-Use **CTAS** to create and populate a deduplicated table in one query (retain latest per email).
+### 7.3 Enrich: SensorData + Equipment + Mines
+
 
 ```sql
-CREATE TABLE credit_score_deduped (
-  customer_email STRING PRIMARY KEY NOT ENFORCED,
-  income_type STRING,
-  credit_score INT,
-  credit_usage_percentage INT,
-  credit_limit_idr INT
-) DISTRIBUTED BY HASH(customer_email)
-WITH ('changelog.mode' = 'upsert')
-AS
-SELECT customer_email, income_type, credit_score, credit_usage_percentage, credit_limit_idr
-FROM (
-  SELECT *,
-         ROW_NUMBER() OVER (
-           PARTITION BY customer_email
-           ORDER BY $rowtime DESC
-         ) AS rownum
-  FROM credit_score_rekeyed
-)
-WHERE rownum = 1;
+CREATE TABLE SensorEnriched AS
+SELECT
+    s.sensordata_id,
+    s.equipment_id,
+    e.eq_type AS equipment_type,
+    e.eq_model AS equipment_model,
+    e.status AS equipment_status,
+    e.mine_id,
+    m.mine_name,
+    m.location,
+    m.mineral_type,
+    m.capacity_tons,
+    s.temperature_c,
+    s.temperature_c * 9 / 5 + 32 AS temperature_f,
+    s.vibration_level,
+    CASE 
+        WHEN s.vibration_level > 0.05 THEN 1 
+        ELSE 0 
+    END AS vibration_alert,
+    s.fuel_rate_lph
+FROM `sensordata` s
+JOIN equipment e
+    ON CAST(s.equipment_id AS INT) = e.equipment_id
+JOIN mines m
+    ON e.mine_id = m.mine_id;
 ```
+XXXXXXXXX
+
 
 ### 7.4 Enrich: Payments + Credit Score
 Aggregate **Payment History** and join with the deduped **Credit Score**.
