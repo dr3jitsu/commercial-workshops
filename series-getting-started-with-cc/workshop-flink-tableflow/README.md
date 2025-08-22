@@ -248,12 +248,65 @@ ksqlDB, and Schema Registry.
   "name": "PaymentHistory",
   "namespace": "demo",
   "fields": [
-    {"name": "customer_email", "type": "string"},
-    {"name": "payment_month_year", "type": "long"},
-    {"name": "amount_idr", "type": "long"},
-    {"name": "application_id", "type": "int"}
+    {
+      "name": "customer_email",
+      "type": {
+        "type": "string",
+        "arg.properties": {
+          "options": [
+            "alex.jose@gmail.com",
+            "james.joe@gmail.com",
+            "john.doe@gmail.com",
+            "lisa.kudrow@gmail.com",
+            "jeniffer.aniston@gmail.com",
+            "ross.geller@gmail.com",
+            "joey.tribbiani@gmail.com",
+            "courtney.cox@gmail.com"
+          ]
+        }
+      }
+    },
+{
+      "name": "payment_month_year",
+      "type": {
+        "type": "long",
+        "arg.properties": {
+          "range": {
+            "min": 1578614400000,
+            "step": 2626560000,
+            "max": 1744243200000
+          }
+        }
+      }
+    },
+{
+      "name": "amount_idr",
+      "type": {
+        "type": "long",
+        "arg.properties": {
+          "range": {
+            "min": 1000000,
+            "step": 100000,
+            "max": 100000000
+          }
+        }
+      }
+    },
+{
+      "name": "application_id",
+      "type": {
+        "type": "int",
+        "arg.properties": {
+          "range": {
+            "min": 50,
+            "max": 100
+          }
+        }
+      }
+    }
   ]
 }
+
 ```
 
 ***
