@@ -141,6 +141,11 @@ You’ll create a **Datagen Source** connector per topic to continuously generat
         }
       }
     },
+   {
+      "name": "timestamp",
+      "type": "string",
+      "logicalType": "timestamp-millis"
+    },
     {
       "name": "equipment_id",
       "type": {
