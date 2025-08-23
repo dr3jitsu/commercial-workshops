@@ -374,6 +374,64 @@ SELECT
 FROM productionstream;
 ```
 
+```sql
+CREATE TABLE SensorEnriched (
+    sensordata_id INT NOT NULL PRIMARY KEY NOT ENFORCED,
+    equipment_id INT,
+    equipment_type STRING,
+    equipment_model STRING,
+    equipment_status STRING,
+    mine_id INT,
+    mine_name STRING,
+    location STRING,
+    mineral_type STRING,
+    capacity_tons DOUBLE,
+    temperature_c FLOAT,
+    temperature_f FLOAT,
+    vibration_level FLOAT,
+    vibration_alert INT,
+    fuel_rate_lph FLOAT,
+    event_time TIMESTAMP_LTZ(3) METADATA FROM 'timestamp',
+    WATERMARK FOR event_time AS event_time - INTERVAL '5' SECOND
+)
+DISTRIBUTED BY (sensordata_id) INTO 1 BUCKETS
+WITH (
+  'changelog.mode' = 'upsert'
+);
+
+```
+
+
+```sql
+INSERT INTO SensorEnriched
+SELECT
+    s.sensordata_id,
+    CAST(s.equipment_id AS INT),
+    e.eq_type AS equipment_type,
+    e.eq_model AS equipment_model,
+    e.status AS equipment_status,
+    e.mine_id,
+    m.mine_name,
+    m.location,
+    m.mineral_type,
+    m.capacity_tons,
+    s.temperature_c,
+    s.temperature_c * 9 / 5 + 32 AS temperature_f,
+    s.vibration_level,
+    CASE 
+        WHEN s.vibration_level > 0.05 THEN 1 
+        ELSE 0 
+    END AS vibration_alert,
+    s.fuel_rate_lph,
+    s.`event_time`
+FROM sensordata_rekeyed s
+LEFT JOIN equipment e
+    ON CAST(s.equipment_id AS INT) = e.equipment_id
+LEFT JOIN mines m
+    ON e.mine_id = m.mine_id;
+```
+
+
 ### 7.2 **Join Table:** Equipment and Mine Join for Unified Metadata
 Table **Equipment** and join with **Mines**.
 This query creates a table combining equipment details with mine information using an inner join, producing a unified view of equipment and their associated mines. It ensures each equipment record is enriched with mine-specific attributes like name, location, and mineral type.
