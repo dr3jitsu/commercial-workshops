@@ -322,6 +322,41 @@ INSERT INTO equipment VALUES
 ```
 You’ll notice the new topics have been created.
 
+```sql
+CREATE TABLE sensordata_rekeyed (
+  sensordata_id INT NOT NULL PRIMARY KEY NOT ENFORCED,
+  equipment_id STRING,
+  temperature_c FLOAT,
+  vibration_level FLOAT,
+  fuel_rate_lph FLOAT,
+  event_time TIMESTAMP_LTZ(3) METADATA FROM 'timestamp',
+  WATERMARK FOR event_time AS event_time - INTERVAL '5' SECOND
+) DISTRIBUTED BY (sensordata_id) INTO 1 BUCKETS
+WITH (
+  'changelog.mode' = 'upsert'
+);
+```
+
+```sql
+INSERT INTO sensordata_rekeyed
+SELECT
+  sensordata_id,
+  equipment_id,
+  temperature_c,
+  vibration_level,
+  fuel_rate_lph,
+  $rowtime as event_time
+FROM sensordata;
+```
+
+```sql
+
+```
+
+```sql
+
+```
+
 ### 7.2 **Join Table:** Equipment and Mine Join for Unified Metadata
 Table **Equipment** and join with **Mines**.
 This query creates a table combining equipment details with mine information using an inner join, producing a unified view of equipment and their associated mines. It ensures each equipment record is enriched with mine-specific attributes like name, location, and mineral type.
