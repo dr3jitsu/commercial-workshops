@@ -725,7 +725,7 @@ WITH (
 Invoke the model against the joined feed and return the decision + reasoning.
 
 ```sql
-
+ALTER TABLE EquipmentPerformance SET ('changelog.mode' = 'append');
 
 ```
 
