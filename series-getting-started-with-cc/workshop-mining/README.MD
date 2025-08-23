@@ -20,13 +20,17 @@ This README is a step‑by‑step lab guide to build a **real‑time streaming p
 5. [Step 3 — Create Environment, Kafka Cluster, and Flink Compute Pool](#step-3--create-environment-kafka-cluster-and-flink-compute-pool)
 6. [Step 4 — Create API Keys](#step-4--create-api-keys)
 7. [Step 5 — Create Kafka Topics](#step-5--create-kafka-topics)
-8. [Step 6 — Create Datagen Source Connectors (3x)](#step-6--create-datagen-source-connectors-3x)
+8. [Step 6 — Create Datagen Source Connectors (2x)](#step-6--create-datagen-source-connectors-2x)
+   - [6.1 SensorData Connector](#61-sensordata-connector)
+   - [6.2 ProductionStream Connector](#62-productionstream-connector)
 9. [Step 7 — Flink Stream Processing](#step-7--flink-stream-processing)
    - [7.1 Open Flink SQL Workspace](#71-open-flink-sql-workspace)
-   - [7.2 Rekey topics (create PK) + insert data](#72-rekey-topics-create-pk--insert-data)
-   - [7.3 CTAS Example: Deduplicate Credit Score](#73-ctas-example-deduplicate-credit-score)
-   - [7.4 Enrich: Payments + Credit Score](#74-enrich-payments--credit-score)
-   - [7.5 Join With Mortgage Applications](#75-join-with-mortgage-applications)
+   - [7.2 Create and Populate Reference Tables (mines and equipment)](#72-create-and-populate-reference-tables-mines-and-equipment)
+   - [7.3 Rekey and Prepare Streaming Topics (sensordata and productionstream)](#73-rekey-and-prepare-streaming-topics-sensordata-and-productionstream)
+   - [7.4 Enrich Sensor Data with Equipment and Mine Metadata](#74-enrich-sensor-data-with-equipment-and-mine-metadata)
+   - [7.5 Aggregate Sensor Data with Tumbling Windows](#75-aggregate-sensor-data-with-tumbling-windows)
+   - [7.6 Verify Topics and Explore Streaming Data](#76-verify-topics-and-explore-streaming-data)
+   - [7.7 Enrich: CTAS Equipment Performance](#77-enrich-ctas-equipment-performance)
 10. [Step 8 — Flink Agentic AI (LLM Inference)](#step-8--flink-agentic-ai-llm-inference)
     - [8.1 Prepare LLM Access (Google AI)](#81-prepare-llm-access-google-ai)
     - [8.2 Create Model Connection via Confluent CLI](#82-create-model-connection-via-confluent-cli)
@@ -36,6 +40,7 @@ This README is a step‑by‑step lab guide to build a **real‑time streaming p
 11. [Verification & Expected Results](#verification--expected-results)
 12. [Cleanup](#cleanup)
 13. [Notes & Tips](#notes--tips)
+
 
 ---
 
