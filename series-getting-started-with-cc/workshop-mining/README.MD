@@ -28,7 +28,7 @@ Goal: Show how to design and run an intelligent, event-driven decision system by
    - [7.4 Enrich Sensor Data with Equipment and Mine Metadata](#74-enrich-sensor-data-with-equipment-and-mine-metadata)
    - [7.5 Aggregate Sensor Data with Tumbling Windows](#75-aggregate-sensor-data-with-tumbling-windows)
    - [7.6 Verify Topics and Explore Streaming Data](#76-verify-topics-and-explore-streaming-data)
-   - [7.7 Enrich & Aggregate Equipment Performance](#77-enrich-&-aggregate-equipment-performance)
+   - [7.7 Enrich & Aggregate Equipment Performance](#77-enrich--aggregate-equipment-performance)
 10. [Step 8 — Flink Agentic AI (LLM Inference)](#step-8--flink-agentic-ai-llm-inference)
     - [8.1 Prepare LLM Access (Google AI)](#81-prepare-llm-access-google-ai)
     - [8.2 Create Model Connection via Confluent CLI](#82-create-model-connection-via-confluent-cli)
@@ -38,7 +38,6 @@ Goal: Show how to design and run an intelligent, event-driven decision system by
 11. [Verification & Expected Results](#verification--expected-results)
 12. [Cleanup](#cleanup)
 13. [Notes & Tips](#notes--tips)
-
 
 ---
 
