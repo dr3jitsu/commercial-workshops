@@ -273,7 +273,19 @@ Once all three connectors are running, you should see data flowing into the topi
    - **Catalog:** your **Environment**
    - **Database:** your **Kafka Cluster**
 4. Put **each query in a separate query tab/box** (click the **+** icon per query).
-5. Create table mines in query tab.
+
+### 7.2 **Create and Populate Reference Tables (mines and equipment)**
+
+Before processing real-time streams, we need reference data that describes mines and their equipment. These tables provide contextual metadata that will later be used to enrich raw sensor and production streams.
+
+The mines table stores information about mining sites (name, location, mineral type, and production capacity).
+
+The equipment table stores details about the mining equipment assigned to each mine (type, model, and operational status).
+
+This reference data ensures that when we join streaming events, each record can be enriched with descriptive mine and equipment information.
+
+
+1. Create table mines in query tab.
 ```sql
 CREATE TABLE mines (
   mine_id INT,
@@ -285,7 +297,7 @@ CREATE TABLE mines (
 );
 ```
 
-6. Insert Records to table mines
+2. Insert Records to table mines
 ```sql
 INSERT INTO mines VALUES
   (1, 'Grasberg Mine', 'Papua, ID', 'Copper/Gold', 2000000),
@@ -294,7 +306,7 @@ INSERT INTO mines VALUES
   (4, 'Khewra Mine', 'Punjab, Pakistan', 'Rock Salt', 800000),
   (5, 'Kiruna Mine', 'Kiruna, Sweden', 'Iron Ore', 1000000);
 ```
-7. Create table equipment
+3. Create table equipment
 ```sql
 CREATE TABLE equipment (
   equipment_id INT,
@@ -306,7 +318,7 @@ CREATE TABLE equipment (
 ); 
 ```
 
-8. Insert Records to table equipment
+4. Insert Records to table equipment
 ```sql
 INSERT INTO equipment VALUES
   (101, 1, 'Haul Truck', 'CAT 793F', 'Active'),
