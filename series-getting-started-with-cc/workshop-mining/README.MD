@@ -322,7 +322,7 @@ INSERT INTO equipment VALUES
 ```
 You’ll notice the new topics have been created.
 
-### 7.2 Equipment and Mine Join for Unified Metadata
+### 7.2 **Join Tablen:** Equipment and Mine Join for Unified Metadata
 Table **Equipment** and join with **Mines**.
 This query creates a table combining equipment details with mine information using an inner join, producing a unified view of equipment and their associated mines. It ensures each equipment record is enriched with mine-specific attributes like name, location, and mineral type.
 
@@ -358,7 +358,7 @@ INNER JOIN mines m
   ON e.mine_id = m.mine_id;
 ```
 
-### 7.3 Sensor Data Enrichment with Equipment and Mine Join
+### 7.3 **Join Tablen:** Sensor Data Enrichment with Equipment and Mine Join
 This query creates an enriched sensor data table by joining raw sensor readings with equipment and mine metadata. 
 It also adds derived fields like temperature in Fahrenheit and a vibration alert flag for easier monitoring and analysis
 
@@ -390,8 +390,32 @@ LEFT JOIN mines m
     ON e.mine_id = m.mine_id;
 ```
 
-
-
+### 7.4 **Aggregation:** Sensor Data Aggregation with Tumbling Windows
+This query aggregates sensor readings per equipment in 5-minute tumbling windows, calculating averages, counts, and alerts for metrics like temperature, vibration, and fuel usage. It produces time-windowed summaries for monitoring equipment performance.
+```sql
+CREATE TABLE sensordata_agg AS
+SELECT
+  CAST(equipment_id AS INT) AS equipment_id,
+  window_start,
+  window_end,
+  COUNT(*) AS reading_count,
+  AVG(temperature_c) AS avg_temperature_c,
+  AVG(vibration_level) AS avg_vibration_level,
+  SUM(CASE WHEN vibration_level > 0.05 THEN 1 ELSE 0 END) AS vibration_alert_count,
+  SUM(fuel_rate_lph) AS sum_fuel_lph,
+  AVG(fuel_rate_lph) AS avg_fuel_rate_lph
+FROM TABLE(
+    TUMBLE(
+        TABLE sensordata,
+        DESCRIPTOR($rowtime),
+        INTERVAL '5' MINUTES
+    )
+)
+GROUP BY
+  CAST(equipment_id AS INT),
+  window_start,
+  window_end;
+```
 ### 7.4 Enrich: CTAS Equipment Performance
 
 This Flink SQL query creates a denormalized, aggregated table EquipmentPerformance that combines data from equipment, mines, sensordata, and productionstream. It calculates per-equipment metrics, including total ore mined, average mineral grade, fuel efficiency, average sensor readings, and vibration alert counts. The query uses joins to include mine information, handles nullable columns with COALESCE, and aggregates the streaming data using SUM, AVG, and COUNT. The resulting table provides a real-time overview of equipment performance for monitoring, analytics, or AI applications.
