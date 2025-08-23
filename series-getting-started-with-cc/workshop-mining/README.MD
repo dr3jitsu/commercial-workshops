@@ -831,7 +831,7 @@ By the end of this lab, you should be able to verify that each stage of the pipe
 ---
 
 ## Notes & Tips
-- Keep Kafka and Flink **cloud/region** aligned (e.g., **GCP / asia-southeast2**) to avoid cross-region latency or unsupported configs.
+- Keep Kafka and Flink **cloud/region** aligned (e.g., **AWS / asia-southeast1**) to avoid cross-region latency or unsupported configs.
 - If data doesn’t appear in Flink tables, verify **topic names**, **schemas**, and **connector status**.
 - If CTAS or joins fail, ensure **PKs** are set as shown and **changelog.mode** is compatible (`upsert` vs `append`).
 - Never commit **API keys** to version control. Use **secrets managers** in production.
