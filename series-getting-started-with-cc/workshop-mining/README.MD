@@ -322,8 +322,9 @@ INSERT INTO equipment VALUES
 ```
 You’ll notice the new topics have been created.
 
-### 7.2 Enrich: Equipment + Mines
+### 7.2 Equipment and Mine Join for Unified Metadata
 Table **Equipment** and join with **Mines**.
+This query creates a table combining equipment details with mine information using an inner join, producing a unified view of equipment and their associated mines. It ensures each equipment record is enriched with mine-specific attributes like name, location, and mineral type.
 
 
 ```sql
@@ -357,8 +358,9 @@ INNER JOIN mines m
   ON e.mine_id = m.mine_id;
 ```
 
-### 7.3 Enrich: SensorData + Equipment + Mines
-
+### 7.3 Sensor Data Enrichment with Equipment and Mine Join
+This query creates an enriched sensor data table by joining raw sensor readings with equipment and mine metadata. 
+It also adds derived fields like temperature in Fahrenheit and a vibration alert flag for easier monitoring and analysis
 
 ```sql
 CREATE TABLE SensorEnriched AS
