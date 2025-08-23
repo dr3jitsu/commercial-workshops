@@ -78,7 +78,7 @@ https://docs.confluent.io/confluent-cli/current/install.html
    - **Region:** **Singapore (asia-southeast1)**
    - **Availability:** **Single Zone**
    - Name your cluster → **Launch cluster**.
-4. Create a Flink compute pool: **Flink** → **Create Compute Pool**:
+4. At the environment level, create a Flink compute pool : **Flink** → **Create Compute Pool**:
    - **Cloud Provider:** AWS
    - **Region:** **Singapore (asia-southeast1)** (must match the Kafka cluster)
    - **Pool name:** choose a name
