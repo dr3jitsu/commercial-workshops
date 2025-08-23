@@ -686,42 +686,36 @@ You have two options:
 Create a model with inputs/outputs and a system prompt describing the decision logic.
 
 ```sql
-CREATE MODEL AgentMortgageModel
+CREATE MODEL EquipmentAgentModel
 INPUT (
   `details` VARCHAR(2147483647)
 )
 OUTPUT (
-  `decisionreasoning` VARCHAR(2147483647)
+  `assessment` VARCHAR(2147483647)
 )
 WITH (
-  'googleai.connection' = 'mortgageagent-connection',
+  'googleai.connection' = 'equipmentagent-connection',
 
   'googleai.system_prompt' = '
-  Your task is to evaluate mortgage applications and provide a final decision: APPROVE or DENY.  
+  You are an equipment performance monitoring agent.  
+  Your task is to analyze aggregated equipment data and assess the current condition of the equipment.  
 
-  Input data will include:
-  - application_id
-  - customer_email
-  - mortgage_type
-  - mortgage_value
-  - credit score
-  - newest payment month year
-  - credit limit
+  Consider the following factors:
+  - Average temperature (°C): high (>80) may indicate overheating.  
+  - Average vibration level: higher than 0.05 indicates potential mechanical issues.  
+  - Fuel efficiency (ore tons per fuel LPH): lower values indicate inefficiency.  
+  - Vibration alert count: frequent alerts signal a worsening condition.  
 
-  Evaluation logic is as follows:
-  1. Credit Score (Highest Priority): Higher is better; a score of 80 or higher is a strong positive, 70 or lower is a red flag.  
-  2. Mortgage Value: Lower is better; a value of 500,000,000 or less is a positive factor.  
-  3. Mortgage Type: floating_rate is more favorable than fixed_rate.  
-  4. Credit Limit (Lowest Priority): Higher is better; a limit of 500,000,000 or more is a positive factor.  
+  Provide an assessment in one of these categories: HEALTHY, WARNING, CRITICAL.  
+  Always include reasoning based on the metrics provided.  
 
-  The final output must be in the format:
-  application id : {application id}.  
-  decision : {Approve / Deny}.  
-  reasoning : {your reasoning}.  
+  Output format:
+  equipment_id : {id}  
+  assessment : {HEALTHY | WARNING | CRITICAL}  
+  reasoning : {short explanation}  
   ',
 
   'provider' = 'googleai',
-
   'task' = 'text_generation'
 );
 
@@ -731,54 +725,54 @@ WITH (
 Invoke the model against the joined feed and return the decision + reasoning.
 
 ```sql
-SELECT application_id, decisionreasoning
-FROM mortgage_submission_feed,
-LATERAL TABLE(ML_PREDICT('AgentMortgageModel', CONCAT(
-  'Application ID: ', CAST(application_id AS STRING),
-  ', Mortgage Type: ', mortgage_type,
-  ', Mortgage Value: IDR', CAST(mortgage_value AS STRING),
-  ', Credit Score: ', CAST(credit_score AS STRING),
-  ', Latest Payment: ', CAST(newest_payment_month_year AS STRING),
-  ', Credit Limit: ', CAST(credit_limit AS STRING)
+SELECT equipment_id, assessment
+FROM EquipmentPerformance,
+LATERAL TABLE(ML_PREDICT('EquipmentAgentModel', CONCAT(
+  'Equipment ID: ', CAST(equipment_id AS STRING),
+  ', Avg Temp: ', CAST(avg_temperature_c AS STRING),
+  ', Avg Vibration: ', CAST(avg_vibration_level AS STRING),
+  ', Fuel Efficiency: ', CAST(fuel_efficiency AS STRING),
+  ', Vibration Alerts: ', CAST(vibration_alert_count AS STRING)
 )));
+
 ```
 
-### 8.5 Optional: 2nd Agent for Credit Score
-Create a **CreditScoreAgent** that proposes a new credit score based on latest payment recency and usage.
+### 8.5 Optional: 2nd Agent for Recommends Maintenance Actions 
+Optionally, we can create another AI agent that recommends maintenance actions based on performance trends (using SensorEnriched_agg or EquipmentPerformance).
 
 **Model:**
 ```sql
-CREATE MODEL CreditScoreAgent
+CREATE MODEL MaintenanceAdvisorAgent
 INPUT (
   `details` VARCHAR(2147483647)
 )
 OUTPUT (
-  `newcreditscore` VARCHAR(2147483647)
+  `recommendation` VARCHAR(2147483647)
 )
 WITH (
-  'googleai.connection' = 'mortgageagent-connection',
+  'googleai.connection' = 'equipmentagent-connection',
 
   'googleai.system_prompt' = '
-  Your task is to propose a new credit score for the customer; whether new or stay as it is.  
+  You are a predictive maintenance advisor for mining equipment.  
+  Based on aggregated sensor and production data, recommend an action:  
 
-  This agent will take a user’s current data and propose an updated credit score.  
+  - CONTINUE OPERATION (if metrics are within normal range).  
+  - SCHEDULE MAINTENANCE (if metrics show early signs of issues).  
+  - IMMEDIATE CHECK REQUIRED (if metrics indicate potential failure).  
 
-  It follows these rules:
-  1. If the latest payment month date is within the last 6 months and the credit usage percentage is below 50%, increase the current credit score by 10.  
-  2. If the latest payment month date is older than 6 months ago but the credit usage percentage is still below 50%, increase the current credit score by 5.  
-  3. In all other scenarios (e.g., credit usage is 50% or more), the credit score remains unchanged.  
+  Consider these thresholds:  
+  - Temperature > 85°C → warning  
+  - Avg vibration > 0.08 → risk of mechanical failure  
+  - Fuel efficiency below 0.5 → inefficiency warning  
+  - Frequent vibration alerts (>5 per window) → check required  
 
-  The agent will need the following inputs:
-  - User Email (for identification)  
-  - Latest Payment Month Date  
-  - Current Credit Score  
-  - Credit Usage Percentage  
-
-  The agent will output a single integer value: Proposed Credit Score
+  Output format:  
+  equipment_id : {id}  
+  recommendation : {CONTINUE OPERATION | SCHEDULE MAINTENANCE | IMMEDIATE CHECK REQUIRED}  
+  reasoning : {short justification}  
   ',
 
   'provider' = 'googleai',
-
   'task' = 'text_generation'
 );
 
@@ -786,14 +780,16 @@ WITH (
 
 **Invoke:**
 ```sql
-SELECT customer_email, newcreditscore
-FROM enriched_topic_credit_payment_history,
-LATERAL TABLE(ML_PREDICT('CreditScoreAgent', CONCAT(
-  'Credit Score: ', CAST(credit_score AS STRING),
-  ', Latest Payment Month Date: ', newest_payment_month_year,
-  ', Credit Usage Percentage: ', CAST(credit_usage_percentage AS STRING),
-  ', User Email: ', customer_email
+SELECT equipment_id, recommendation
+FROM SensorEnriched_agg,
+LATERAL TABLE(ML_PREDICT('MaintenanceAdvisorAgent', CONCAT(
+  'Equipment ID: ', CAST(equipment_id AS STRING),
+  ', Avg Temp: ', CAST(avg_temperature_c AS STRING),
+  ', Avg Vibration: ', CAST(avg_vibration_level AS STRING),
+  ', Fuel Rate LPH: ', CAST(avg_fuel_rate_lph AS STRING),
+  ', Vibration Alerts: ', CAST(vibration_alert_count AS STRING)
 )));
+
 ```
 
 ---
