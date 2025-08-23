@@ -673,7 +673,7 @@ You have two options:
    ```
 3. Create the **Flink connection** (replace placeholders with your values where needed):
    ```bash
-   confluent flink connection create mortgageagent-connection --cloud GCP 
+   confluent flink connection create mining-connection --cloud AWS 
    --region <your flink region id> --environment <your Confluent environment id>      
    --type googleai      
    --endpoint https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent      
