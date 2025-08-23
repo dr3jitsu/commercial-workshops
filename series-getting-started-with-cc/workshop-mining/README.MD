@@ -350,11 +350,28 @@ FROM sensordata;
 ```
 
 ```sql
-
+CREATE TABLE productionstream_rekeyed (
+  production_id INT NOT NULL PRIMARY KEY NOT ENFORCED,
+  equipment_id STRING,
+  ore_tons FLOAT,
+  mineral_grade_pct FLOAT,
+  event_time TIMESTAMP_LTZ(3) METADATA FROM 'timestamp'
+)
+DISTRIBUTED BY (production_id) INTO 1 BUCKETS
+WITH (
+  'changelog.mode' = 'upsert'
+);
 ```
 
 ```sql
-
+INSERT INTO productionstream_rekeyed
+SELECT
+  production_id,
+  equipment_id,
+  ore_tons,
+  mineral_grade_pct,
+  $rowtime as event_time
+FROM productionstream;
 ```
 
 ### 7.2 **Join Table:** Equipment and Mine Join for Unified Metadata
