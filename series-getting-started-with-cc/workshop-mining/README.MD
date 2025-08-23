@@ -570,7 +570,7 @@ SELECT * FROM SensorEnriched LIMIT 10;
 SELECT * FROM SensorEnriched_agg LIMIT 10;
 
 ```
-### 7.7 Enrich & Aggregate: Equipment Performance (5-Minute Tumbling Window)
+### 7.7 Enrich & Aggregate: Equipment Performance
 
 In this step, we create an aggregated EquipmentPerformance table that combines productionstream, sensordata, and static reference data (equipment and mines) to compute real-time performance metrics per equipment.
 
