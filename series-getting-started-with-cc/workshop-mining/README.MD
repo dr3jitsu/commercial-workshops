@@ -694,7 +694,7 @@ OUTPUT (
   `assessment` VARCHAR(2147483647)
 )
 WITH (
-  'googleai.connection' = 'equipmentagent-connection',
+  'googleai.connection' = 'mining-connection',
 
   'googleai.system_prompt' = '
   You are an equipment performance monitoring agent.  
@@ -725,6 +725,11 @@ WITH (
 Invoke the model against the joined feed and return the decision + reasoning.
 
 ```sql
+
+
+```
+
+```sql
 SELECT equipment_id, assessment
 FROM EquipmentPerformance,
 LATERAL TABLE(ML_PREDICT('EquipmentAgentModel', CONCAT(
@@ -750,7 +755,7 @@ OUTPUT (
   `recommendation` VARCHAR(2147483647)
 )
 WITH (
-  'googleai.connection' = 'equipmentagent-connection',
+  'googleai.connection' = 'mining-connection',
 
   'googleai.system_prompt' = '
   You are a predictive maintenance advisor for mining equipment.  
