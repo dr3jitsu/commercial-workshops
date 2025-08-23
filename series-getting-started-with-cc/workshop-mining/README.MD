@@ -795,15 +795,31 @@ LATERAL TABLE(ML_PREDICT('MaintenanceAdvisorAgent', CONCAT(
 ---
 
 ## Verification & Expected Results
-- **Topics** show incoming records for all three sources.
-- **`credit_score_rekeyed`, `mortgage_application_rekeyed`, `payment_history_rekeyed`** contain keyed data.
-- **`credit_score_deduped`** keeps only the latest row per `customer_email`.
-- **`enriched_topic_credit_payment_history`** shows aggregated payments and credit metrics with `newest_payment_month_year` as `YYYY-MM`.
-- **`mortgage_submission_feed`** shows the combined application + profile data.
-- **Model invocation** returns rows with **`application_id`** and **`decisionreasoning`** such as:
-  ```
-  application id : 123. decision : APPROVE. reasoning : ...
-  ```
+
+By the end of this lab, you should be able to verify that each stage of the pipeline is working as expected:
+
+### Topics & Connectors
+- `sensordata` and `productionstream` are continuously receiving records from the **Datagen source connectors**.  
+- Rekeyed topics (`sensordata_rekeyed`, `productionstream_rekeyed`) show **keyed events** with proper **event time** and **watermarks**.  
+
+### Reference & Enrichment Tables
+- `mines` and `equipment` contain the **static metadata** you inserted.  
+- `SensorEnriched` shows **raw sensor readings** joined with **equipment** and **mine context** (equipment type, model, mine name, etc.), including **derived fields** such as `temperature_f` and `vibration_alert`.  
+
+### Aggregations
+- `SensorEnriched_agg` contains **5-minute tumbling window summaries** (average temperature, vibration, fuel rate, vibration alert count, etc.).  
+- `EquipmentPerformance` combines **production data** and **sensor metrics per equipment**, producing **performance KPIs** such as:
+  - total ore tons  
+  - average grade  
+  - fuel efficiency  
+  - vibration alert count  
+
+### LLM Inference
+- Invoking `EquipmentAgentModel` on `EquipmentPerformance` returns **assessments** like:
+  - Equipment health status  
+  - Performance classification  
+  - Predictive maintenance recommendations  
+
 
 ---
 
