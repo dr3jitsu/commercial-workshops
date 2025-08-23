@@ -607,22 +607,21 @@ SELECT
     AVG(s.vibration_level) AS avg_vibration_level,
     SUM(CASE WHEN s.vibration_level > 0.05 THEN 1 ELSE 0 END) AS vibration_alert_count,
 
-    -- Calculated efficiency (ore per unit of fuel)
+    -- Calculated efficiency
     SUM(p.ore_tons) / NULLIF(SUM(s.fuel_rate_lph), 0) AS fuel_efficiency
 
-FROM TABLE(
-    TUMBLE(
-        TABLE sensordata_rekeyed s
-        LEFT JOIN productionstream_rekeyed p
-          ON CAST(s.equipment_id AS INT) = CAST(p.equipment_id AS INT)
-        LEFT JOIN equipment e
-          ON CAST(s.equipment_id AS INT) = e.equipment_id
-        LEFT JOIN mines m
-          ON e.mine_id = m.mine_id,
-        DESCRIPTOR(s.event_time),
-        INTERVAL '5' MINUTES
+FROM (
+    SELECT *
+    FROM TABLE(
+        TUMBLE(TABLE sensordata_rekeyed, DESCRIPTOR(event_time), INTERVAL '5' MINUTES)
     )
-)
+) s
+LEFT JOIN productionstream_rekeyed p
+    ON CAST(s.equipment_id AS INT) = CAST(p.equipment_id AS INT)
+LEFT JOIN equipment e
+    ON CAST(s.equipment_id AS INT) = e.equipment_id
+LEFT JOIN mines m
+    ON e.mine_id = m.mine_id
 GROUP BY
     e.equipment_id,
     e.eq_type,
