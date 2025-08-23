@@ -311,14 +311,14 @@ CREATE TABLE equipment (
 INSERT INTO equipment VALUES
   (101, 1, 'Haul Truck', 'CAT 793F', 'Active'),
   (102, 1, 'Excavator', 'Hitachi EX5600', 'Active'),
-  (103, 1, 'Crusher', 'Metso C200', 'Under Maint'),
+  (103, 1, 'Crusher', 'Metso C200', 'Active'),
   (201, 2, 'Drill Rig', 'Sandvik D45', 'Active'),
   (202, 2, 'Haul Truck', 'Komatsu 930E', 'Active'),
   (301, 3, 'Conveyor Belt', 'ThyssenKrupp', 'Active'),
   (302, 3, 'Excavator', 'Liebherr R9800', 'Active'),
   (401, 4, 'Loader', 'CAT 992K', 'Active'),
   (501, 5, 'Drill Rig', 'Atlas Copco DML', 'Active'),
-  (502, 5, 'Haul Truck', 'Volvo R100E', 'Under Maint');
+  (502, 5, 'Haul Truck', 'Volvo R100E', 'Active');
 ```
 You’ll notice the new topics have been created.
 
