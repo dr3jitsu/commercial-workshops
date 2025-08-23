@@ -334,6 +334,20 @@ INSERT INTO equipment VALUES
 ```
 You’ll notice the new topics have been created.
 
+### 7.3 **Rekey and Prepare Streaming Topics (sensordata and productionstream)**
+
+Raw Kafka topics (sensordata and productionstream) need to be transformed into Flink-managed tables with proper primary keys, event-time processing, and watermarks. This step ensures that downstream operations like joins, aggregations, and windowed analysis work correctly.
+
+We will:
+
+Rekey the sensordata stream by using sensordata_id as the primary key, while extracting event time from the row metadata.
+
+Rekey the productionstream stream by using production_id as the primary key, also with event-time extraction.
+
+This prepares both streams for accurate time-based processing in Flink SQL.
+
+1. Create the sensordata_rekeyed table
+
 ```sql
 CREATE TABLE sensordata_rekeyed (
   sensordata_id INT NOT NULL PRIMARY KEY NOT ENFORCED,
@@ -348,6 +362,7 @@ WITH (
   'changelog.mode' = 'upsert'
 );
 ```
+2. Populate sensordata_rekeyed from the raw topic
 
 ```sql
 INSERT INTO sensordata_rekeyed
@@ -360,6 +375,8 @@ SELECT
   $rowtime as event_time
 FROM sensordata;
 ```
+
+3. Create the productionstream_rekeyed table
 
 ```sql
 CREATE TABLE productionstream_rekeyed (
@@ -374,7 +391,7 @@ WITH (
   'changelog.mode' = 'upsert'
 );
 ```
-
+4. Populate productionstream_rekeyed from the raw topic
 ```sql
 INSERT INTO productionstream_rekeyed
 SELECT
@@ -385,6 +402,8 @@ SELECT
   $rowtime as event_time
 FROM productionstream;
 ```
+Both sensordata_rekeyed and productionstream_rekeyed tables are now keyed, time-aware streams that support windowing, aggregation, and enrichment in the next steps.
+
 
 ```sql
 CREATE TABLE SensorEnriched (
