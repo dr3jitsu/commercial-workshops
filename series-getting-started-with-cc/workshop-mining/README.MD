@@ -74,13 +74,13 @@ https://docs.confluent.io/confluent-cli/current/install.html
 1. In Confluent Cloud, click **+ Add Environment** → enter a name → **Create**.
 2. Inside the environment, click **Create cluster**.
 3. Choose **Basic Cluster**, and set:
-   - **Cloud:** Google Cloud
-   - **Region:** **Jakarta (asia-southeast2)**
+   - **Cloud:** AWS
+   - **Region:** **Singapore (asia-southeast1)**
    - **Availability:** **Single Zone**
    - Name your cluster → **Launch cluster**.
 4. Create a Flink compute pool: **Flink** → **Create Compute Pool**:
-   - **Cloud Provider:** GCP
-   - **Region:** **Jakarta (asia-southeast2)** (must match the Kafka cluster)
+   - **Cloud Provider:** AWS
+   - **Region:** **Singapore (asia-southeast1)** (must match the Kafka cluster)
    - **Pool name:** choose a name
    - **Max CFU:** `10`
    - **Create**.
