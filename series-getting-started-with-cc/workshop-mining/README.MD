@@ -628,44 +628,6 @@ GROUP BY
     m.capacity_tons;
 
 ```
-
-XXXXXXXXX
-
-### 7.5 Join With Mortgage Applications
-Create a **feed** that combines mortgage applications with the enriched customer profile.
-
-```sql
-CREATE TABLE mortgage_submission_feed (
-  application_id INT NOT NULL PRIMARY KEY NOT ENFORCED,
-  customer_email STRING,
-  mortgage_type STRING,
-  mortgage_value INT,
-  credit_score INT,
-  newest_payment_month_year STRING,
-  credit_limit INT
-) WITH ('changelog.mode' = 'upsert');
-```
-
-```sql
-INSERT INTO mortgage_submission_feed
-SELECT
-  ma.application_id,
-  ma.customer_email,
-  ma.mortgage_type,
-  ma.mortgage_value,
-  etcph.credit_score,
-  etcph.newest_payment_month_year,
-  etcph.credit_limit_idr
-FROM mortgage_application_rekeyed ma
-LEFT JOIN enriched_topic_credit_payment_history etcph
-  ON ma.customer_email = etcph.customer_email;
-```
-
-Set the table to **append**:
-```sql
-ALTER TABLE `mortgage_submission_feed` SET ('changelog.mode'='append');
-```
-
 ---
 
 ## Step 8 — Flink Agentic AI (LLM Inference)
