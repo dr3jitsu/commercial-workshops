@@ -404,6 +404,23 @@ FROM productionstream;
 ```
 Both sensordata_rekeyed and productionstream_rekeyed tables are now keyed, time-aware streams that support windowing, aggregation, and enrichment in the next steps.
 
+### 7.4 **Enrich Sensor Data with Equipment and Mine Metadata**
+
+Now that the raw sensor data (sensordata_rekeyed) has been rekeyed and prepared with event time, we can enrich it with contextual information from the equipment and mines reference tables.
+
+This step creates a denormalized SensorEnriched table, which includes:
+
+Sensor readings (temperature, vibration, fuel rate).
+
+Derived metrics like temperature in Fahrenheit and a vibration alert flag.
+
+Equipment metadata (type, model, status).
+
+Mine metadata (name, location, mineral type, production capacity).
+
+By joining streams with static reference data, downstream analytics and monitoring queries can leverage both real-time values and descriptive context.
+
+1. Create the SensorEnriched table
 
 ```sql
 CREATE TABLE SensorEnriched (
@@ -431,7 +448,7 @@ WITH (
 );
 
 ```
-
+2. Populate SensorEnriched with joined and derived data
 
 ```sql
 INSERT INTO SensorEnriched
@@ -461,6 +478,23 @@ LEFT JOIN equipment e
 LEFT JOIN mines m
     ON e.mine_id = m.mine_id;
 ```
+### 7.5 **Aggregate Sensor Data with Tumbling Windows**
+
+Once the sensor data has been enriched with equipment and mine context, the next step is to summarize the readings over fixed time intervals. This makes it easier to monitor equipment health and performance trends in real time.
+
+We use a 5-minute tumbling window to aggregate data for each piece of equipment. Within each window, we compute:
+
+Counts: number of sensor readings.
+
+Averages: temperature, vibration, fuel consumption.
+
+Sums: total fuel consumption, number of vibration alerts.
+
+Window boundaries: human-readable start and end times of the aggregation window.
+
+This results in a time-series summary table (SensorEnriched_agg) that can be directly used for dashboards, monitoring, or anomaly detection.
+
+1. Create the SensorEnriched_agg table with windowed aggregates
 
 ```sql
 CREATE TABLE SensorEnriched_agg AS
@@ -502,6 +536,45 @@ GROUP BY
   capacity_tons,
   window_start,
   window_end;
+
+```
+
+### 7.6 **Verify Topics and Explore Streaming Data**
+
+Before proceeding with more complex joins or AI integrations, it is important to validate that the topics and tables are being populated correctly. In this step, we will:
+
+Check that the rekeyed and enriched tables exist and are active.
+
+Explore sample records from each table to confirm that data is flowing as expected.
+
+Validate that enrichment and aggregations are producing meaningful values.
+
+1. List available topics in Flink SQL workspace
+
+```sql
+SHOW TABLES;
+```
+
+2. Explore data in the raw rekeyed streams
+
+```sql
+-- Sensor data after rekeying
+SELECT * FROM sensordata_rekeyed LIMIT 10;
+
+-- Production stream after rekeying
+SELECT * FROM productionstream_rekeyed LIMIT 10;
+```
+
+3. Explore enriched sensor data
+
+```sql
+SELECT * FROM SensorEnriched LIMIT 10;
+
+```
+4. Explore aggregated summaries
+
+```sql
+SELECT * FROM SensorEnriched_agg LIMIT 10;
 
 ```
 
