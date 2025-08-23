@@ -570,9 +570,16 @@ SELECT * FROM SensorEnriched LIMIT 10;
 SELECT * FROM SensorEnriched_agg LIMIT 10;
 
 ```
-### 7.4 Enrich: CTAS Equipment Performance
+### 7.7 Enrich & Aggregate: Equipment Performance (5-Minute Tumbling Window)
 
-This Flink SQL query creates a denormalized, aggregated table EquipmentPerformance that combines data from equipment, mines, sensordata, and productionstream. It calculates per-equipment metrics, including total ore mined, average mineral grade, fuel efficiency, average sensor readings, and vibration alert counts. The query uses joins to include mine information, handles nullable columns with COALESCE, and aggregates the streaming data using SUM, AVG, and COUNT. The resulting table provides a real-time overview of equipment performance for monitoring, analytics, or AI applications.
+In this step, we create an aggregated EquipmentPerformance table that combines productionstream, sensordata, and static reference data (equipment and mines) to compute real-time performance metrics per equipment.
+
+Like we did for sensor aggregation, we’ll use a 5-minute tumbling window to calculate metrics such as ore mined, average grade, fuel efficiency, and vibration alerts for each piece of equipment.
+
+This provides a time-bucketed performance summary that can be used for dashboards, monitoring, or feeding downstream AI agents.
+
+1. Create the EquipmentPerformance table with windowed aggregates
+
 ```sql
 CREATE TABLE EquipmentPerformance AS
 SELECT
@@ -586,29 +593,37 @@ SELECT
     m.mineral_type,
     m.capacity_tons,
 
-    -- Aggregated metrics
+    -- Window boundaries
+    DATE_FORMAT(window_start, 'yyyy-MM-dd HH:mm:ss') AS window_start_str,
+    DATE_FORMAT(window_end, 'yyyy-MM-dd HH:mm:ss') AS window_end_str,
+
+    -- Production metrics
     SUM(p.ore_tons) AS total_ore_tons,
     AVG(p.mineral_grade_pct) AS avg_mineral_grade,
     COUNT(p.production_id) AS production_events,
-    AVG(s.fuel_rate_lph) AS avg_fuel_rate_lph,
-
-    -- Calculated column: fuel efficiency (ore_tons / fuel_rate)
-    SUM(p.ore_tons) / NULLIF(SUM(s.fuel_rate_lph),0) AS fuel_efficiency,
 
     -- Sensor metrics
+    AVG(s.fuel_rate_lph) AS avg_fuel_rate_lph,
     AVG(s.temperature_c) AS avg_temperature_c,
     AVG(s.vibration_level) AS avg_vibration_level,
-    SUM(CASE WHEN s.vibration_level > 0.05 THEN 1 ELSE 0 END) AS vibration_alert_count
+    SUM(CASE WHEN s.vibration_level > 0.05 THEN 1 ELSE 0 END) AS vibration_alert_count,
 
-FROM equipment e
-JOIN mines m
-    ON e.mine_id = m.mine_id
-LEFT JOIN sensordata s
-    ON CAST(s.equipment_id AS INT) = e.equipment_id
-LEFT JOIN productionstream p
-    ON CAST(p.equipment_id AS INT) = e.equipment_id
+    -- Calculated efficiency (ore per unit of fuel)
+    SUM(p.ore_tons) / NULLIF(SUM(s.fuel_rate_lph), 0) AS fuel_efficiency
 
--- Optional: group by equipment to aggregate metrics
+FROM TABLE(
+    TUMBLE(
+        TABLE sensordata_rekeyed s
+        LEFT JOIN productionstream_rekeyed p
+          ON CAST(s.equipment_id AS INT) = CAST(p.equipment_id AS INT)
+        LEFT JOIN equipment e
+          ON CAST(s.equipment_id AS INT) = e.equipment_id
+        LEFT JOIN mines m
+          ON e.mine_id = m.mine_id,
+        DESCRIPTOR(s.event_time),
+        INTERVAL '5' MINUTES
+    )
+)
 GROUP BY
     e.equipment_id,
     e.eq_type,
@@ -618,7 +633,16 @@ GROUP BY
     m.mine_name,
     m.location,
     m.mineral_type,
-    m.capacity_tons;
+    m.capacity_tons,
+    window_start,
+    window_end;
+
+```
+
+2. Verify EquipmentPerformance data
+
+```sql
+SELECT * FROM EquipmentPerformance LIMIT 10;
 
 ```
 ---
