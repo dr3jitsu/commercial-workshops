@@ -101,6 +101,7 @@ Create 2 topics (Partitions: `1` for each):
 - `productionstream`
 
 **UI path:** Cluster → **Topics** → **+ Add Topic** → fill in details → **Create with defaults**.
+Skip the data contract creation step
 
 ---
 
