@@ -1,14 +1,12 @@
 # Workshop: Build an Agentic AI Data Streaming Pipeline with Confluent Data Streaming Platform
 
-This README is a step‑by‑step lab guide to build a **real‑time streaming pipeline with agentic AI** for automated **mortgage application** processing using **Confluent Cloud (Kafka + Flink)** and an LLM connection (Google AI / Gemini). It is organized so you can follow each step from account setup through model inference.
+This workshop is a **hands-on lab** where you’ll learn how to combine real-time data streaming with agentic AI (LLMs) to make automated, intelligent decisions.
 
-> **What you’ll build**
->
-> - Kafka topics that simulate mortgage-related data (credit score, mortgage applications, and payment history).
-> - Flink SQL pipelines to **rekey**, **deduplicate**, **aggregate**, and **join** those streams.
-> - An **Agentic AI** integration with Flink to make **APPROVE/DENY** decisions for mortgage applications.
->
-> **Goal:** demonstrate intelligent, event-driven decision-making with modern data platforms.
+We’ll walk step-by-step through building a **streaming pipeline using Confluent Cloud (Kafka + Flink)**, where live data is processed, enriched, and then passed to an AI model that evaluates it and returns actionable results.
+
+Instead of just moving data around, you’ll see how modern platforms can react to events in real time—for example, automatically deciding whether a mortgage application should be APPROVED or DENIED based on streaming credit, payment, and application data.
+
+Goal: Show how to design and run an intelligent, event-driven decision system by combining Kafka, Flink, and LLMs in Confluent Cloud.
 
 ---
 
