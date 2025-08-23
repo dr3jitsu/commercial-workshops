@@ -431,6 +431,48 @@ LEFT JOIN mines m
     ON e.mine_id = m.mine_id;
 ```
 
+```sql
+CREATE TABLE SensorEnriched_agg AS
+SELECT
+  CAST(equipment_id AS INT) AS equipment_id,
+  equipment_type,
+  equipment_model,
+  equipment_status,
+  mine_id,
+  mine_name,
+  location,
+  mineral_type,
+  capacity_tons,
+  window_start,
+  window_end,
+  COUNT(*) AS reading_count,
+  AVG(temperature_c) AS avg_temperature_c,
+  AVG(temperature_f) AS avg_temperature_f,
+  AVG(vibration_level) AS avg_vibration_level,
+  SUM(vibration_alert) AS vibration_alert_count,
+  SUM(fuel_rate_lph) AS sum_fuel_lph,
+  AVG(fuel_rate_lph) AS avg_fuel_rate_lph
+FROM TABLE(
+    TUMBLE(
+        TABLE SensorEnriched,
+        DESCRIPTOR(event_time),
+        INTERVAL '5' MINUTES
+    )
+)
+GROUP BY
+  CAST(equipment_id AS INT),
+  equipment_type,
+  equipment_model,
+  equipment_status,
+  mine_id,
+  mine_name,
+  location,
+  mineral_type,
+  capacity_tons,
+  window_start,
+  window_end;
+
+```
 
 ### 7.2 **Join Table:** Equipment and Mine Join for Unified Metadata
 Table **Equipment** and join with **Mines**.
