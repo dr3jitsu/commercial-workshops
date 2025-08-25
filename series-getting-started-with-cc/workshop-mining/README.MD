@@ -34,7 +34,7 @@ Goal: Show how to design and run an intelligent, event-driven decision system by
     - [8.2 Create Model Connection via Confluent CLI](#82-create-model-connection-via-confluent-cli)
     - [8.3 Create AI Model in Flink SQL](#83-create-ai-model-in-flink-sql)
     - [8.4 Invoke the Model](#84-invoke-the-model)
-    - [8.5 Optional: 2nd Agent for Credit Score](#85-optional-2nd-agent-for-credit-score)
+    - [8.5 Optional: 2nd Agent for Recommends Maintenance Actions](#85-optional-2nd-agent-for-recommends-maintenance-actions)
 11. [Verification & Expected Results](#verification--expected-results)
 12. [Cleanup](#cleanup)
 13. [Notes & Tips](#notes--tips)
