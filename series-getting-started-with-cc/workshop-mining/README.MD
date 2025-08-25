@@ -42,10 +42,10 @@ Goal: Show how to design and run an intelligent, event-driven decision system by
 ---
 
 ## Objectives
-Design and implement a **real-time streaming pipeline** where **Flink** processes and enriches mortgage application data, and an **LLM** automatically outputs approval decisions. You will:
-- Generate sample data with **Datagen Connectors**.
-- Build Flink SQL transformations (rekey, dedupe, aggregate, join).
-- Connect Flink to **Google AI** and run an **Agent** that returns **APPROVE/DENY** plus reasoning.
+Design and implement a **real-time streaming pipeline** where **Flink** processes and enriches **Lsensor and production data**, and an **LLM** automatically outputs approval decisions. You will:
+- Generate real-time sensor and production data with **Datagen Connectors**.
+- Build **Flink SQL transformations** (rekey, dedupe, aggregate, join) to enrich and analyze equipment performance.
+- Connect Flink to an **AI Agent** and run real-time inference that classifies equipment health as **HEALTHY, WARNING, or CRITICAL with reasoning**.
 
 ---
 
