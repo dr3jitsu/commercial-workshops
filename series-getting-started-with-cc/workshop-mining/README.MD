@@ -4,7 +4,7 @@ This workshop is a **hands-on lab** where you’ll learn how to combine real-tim
 
 We’ll walk step-by-step through building a **streaming pipeline using Confluent Cloud (Kafka + Flink)**, where live data is processed, enriched, and then passed to an AI model that evaluates it and returns actionable results.
 
-Instead of just moving data around, you’ll see how modern platforms can react to events in real time—for example, automatically deciding whether a mortgage application should be APPROVED or DENIED based on streaming credit, payment, and application data.
+Instead of just moving data around, you’ll see how modern platforms can react to events in real time—for example, applying Real-time Data Streaming and AI to instantly classify equipment health as HEALTHY, WARNING, or CRITICAL based on sensor data, helping reduce downtime, improve operational efficiency, and enable faster, data-driven decisions.
 
 Goal: Show how to design and run an intelligent, event-driven decision system by combining Kafka, Flink, and LLMs in Confluent Cloud.
 
