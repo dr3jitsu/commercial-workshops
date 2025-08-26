@@ -82,13 +82,74 @@ SELECT sensor_id, temperature,ts FROM sensor_events;
 
 ### 4. Handling Nested JSON
 ```sql
-SELECT
-  nested.field1,
-  nested.field2,
-  nested.inner.field3
-FROM nested_json_table;
+CREATE TABLE `NestedTopic` (
+  `id` STRING,
+  `nested_JSON` ARRAY< ROW< `type` STRING NOT NULL, `value` STRING NOT NULL > NOT NULL > 
+)
+DISTRIBUTED BY HASH(`id`)
+INTO 2 BUCKETS WITH ('changelog.mode' = 'retract', 
+  'connector' = 'confluent', 
+  'key.format' = 'avro-registry', 
+  'value.format' = 'avro-registry')
 ```
+```sql
+INSERT INTO NestedTopic VALUES
+(
+  'id-1',
+  ARRAY[
+    ROW('temperature', '25.3'),
+    ROW('humidity', '60')
+  ]
+),
+(
+  'id-2',
+  ARRAY[
+    ROW('vibration', 'high'),
+    ROW('fuel_rate', '12.5')
+  ]
+),
+(
+  'id-3',
+  ARRAY[
+    ROW('temperature', '29.8'),
+    ROW('pressure', '1013'),
+    ROW('status', 'active')
+  ]
+),
+(
+  'id-4',
+  ARRAY[
+    ROW('temperature', '18.4'),
+    ROW('humidity', '75'),
+    ROW('battery', 'low')
+  ]
+),
+(
+  'id-5',
+  ARRAY[
+    ROW('vibration', 'medium'),
+    ROW('fuel_rate', '9.3'),
+    ROW('status', 'idle')
+  ]
+),
+(
+  'id-6',
+  ARRAY[
+    ROW('temperature', '32.1'),
+    ROW('humidity', '55'),
+    ROW('pressure', '1009'),
+    ROW('alert', 'overheat')
+  ]
+);
 
+```
+```sql
+SELECT
+   t.id,
+   t.nested_JSON
+FROM `NestedTopic` t
+WHERE JSON_QUERY(JSON_STRING(t.nested_JSON), '$[*].type') LIKE '%vibration%'
+```
 ### 5. Deduplication
 ```sql
 SELECT *
