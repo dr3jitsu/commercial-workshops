@@ -27,20 +27,22 @@ This repository provides a **cheatsheet for working with Apache Flink on Conflue
 
 ## ⚡ Flink SQL Cheatsheet
 
-### 1. Create Table
+### 1. Create Table and Insert Records
 ```sql
 CREATE TABLE sensor_events (
   sensor_id STRING,
   temperature DOUBLE,
   ts TIMESTAMP(3),
   WATERMARK FOR ts AS ts - INTERVAL '5' SECOND
-) WITH (
-  'connector' = 'kafka',
-  'topic' = 'sensor_topic',
-  'properties.bootstrap.servers' = '$(bootstrap_servers)',
-  'properties.security.protocol' = 'SASL_SSL',
-  'properties.sasl.jaas.config' = '$(jaas_config)',
-  'format' = 'json'
+);
+```
+
+```sql
+CREATE TABLE sensor_events (
+  sensor_id STRING,
+  temperature DOUBLE,
+  ts TIMESTAMP(3),
+  WATERMARK FOR ts AS ts - INTERVAL '5' SECOND
 );
 ```
 
