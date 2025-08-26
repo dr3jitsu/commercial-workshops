@@ -8,6 +8,11 @@ Instead of just moving data around, you’ll see how modern platforms can react 
 
 Goal: Show how to design and run an intelligent, event-driven decision system by combining Kafka, Flink, and LLMs in Confluent Cloud.
 
+<div align="center" padding=25px>
+    <img src="images/detail.png" width=100% height=100%>
+</div>
+
+
 ---
 
 ## Table of Contents
@@ -48,7 +53,7 @@ Design and implement **a real-time streaming pipeline** where **Flink** processe
 - Connect Flink to an **AI Agent** and run real-time inference that classifies equipment health as **HEALTHY, WARNING, or CRITICAL with reasoning**.
 
 <div align="center" padding=25px>
-    <img src="images/detail.png" width=75% height=75%>
+    <img src="images/detail.png" width=100% height=100%>
 </div>
 
 ---
