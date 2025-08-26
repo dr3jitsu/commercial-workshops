@@ -213,6 +213,25 @@ WHERE rownum = 1;
 ```
 
 ### 6. Data Enrichment (Join with Reference Data)
+
+```sql
+CREATE TABLE sensor_metadata (
+  sensor_id STRING PRIMARY KEY NOT ENFORCED,
+  location STRING
+) WITH (
+  'connector' = 'confluent' 
+);
+
+```
+
+```sql
+INSERT INTO sensor_metadata VALUES
+  ('sensor-1', 'Jakarta'),
+  ('sensor-2', 'Bandung'),
+  ('sensor-3', 'Surabaya');
+
+```
+
 ```sql
 SELECT e.sensor_id, e.temperature, d.location
 FROM sensor_events e
