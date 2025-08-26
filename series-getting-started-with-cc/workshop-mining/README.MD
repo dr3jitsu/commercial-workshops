@@ -1,5 +1,9 @@
 # Workshop: Build an Agentic AI Data Streaming Pipeline with Confluent Data Streaming Platform
 
+<div align="center">
+  <img src="images/confluent.png" width="50%" height="50%">
+</div>
+
 This workshop is a **hands-on lab** where you’ll learn how to combine real-time data streaming with agentic AI (LLMs) to make automated, intelligent decisions.
 
 We’ll walk step-by-step through building a **streaming pipeline using Confluent Cloud (Kafka + Flink)**, where live data is processed, enriched, and then passed to an AI model that evaluates it and returns actionable results.
