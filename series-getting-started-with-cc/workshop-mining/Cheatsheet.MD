@@ -80,30 +80,6 @@ INSERT INTO sensor_events_avro
 SELECT sensor_id, temperature,ts FROM sensor_events;
 ```
 
-#### CSV → JSON
-```sql
-CREATE TABLE csv_source (
-  sensor_id STRING,
-  temperature DOUBLE
-) WITH (
-  'connector' = 'kafka',
-  'topic' = 'csv_topic',
-  'format' = 'csv'
-);
-
-CREATE TABLE json_sink (
-  sensor_id STRING,
-  temperature DOUBLE
-) WITH (
-  'connector' = 'kafka',
-  'topic' = 'json_topic',
-  'format' = 'json'
-);
-
-INSERT INTO json_sink
-SELECT * FROM csv_source;
-```
-
 ### 4. Handling Nested JSON
 ```sql
 SELECT
