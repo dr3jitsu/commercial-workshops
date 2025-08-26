@@ -44,28 +44,40 @@ INSERT INTO sensor_events VALUES
   ('sensor-3', 28.9, TIMESTAMP '2025-08-26 14:02:00');
 ```
 
-### 2. Insert & Select Data
+### 2. Add Primary Key & Insert Data using Select 
 ```sql
-INSERT INTO sensor_output
-SELECT sensor_id, AVG(temperature) AS avg_temp
-FROM sensor_events
-GROUP BY sensor_id;
+CREATE TABLE sensor_events_rekeyed (
+  sensor_id STRING NOT NULL PRIMARY KEY NOT ENFORCED,
+  temperature DOUBLE,
+  ts TIMESTAMP_LTZ(3) METADATA FROM 'timestamp',
+  WATERMARK FOR ts AS ts - INTERVAL '5' SECOND
+) 
+WITH (
+  'changelog.mode' = 'upsert'
+);
 ```
 
+```sql
+CREATE TABLE sensor_output AS
+SELECT
+  sensor_id,
+  AVG(temperature) AS avg_temp
+FROM sensor_events_rekeyed
+GROUP BY sensor_id;
+```
 ### 3. Format Conversions
 #### JSON → AVRO
 ```sql
-CREATE TABLE avro_sink (
+CREATE TABLE sensor_events_avro (
   sensor_id STRING,
-  temperature DOUBLE
+  temperature DOUBLE,
+  ts TIMESTAMP(3)
 ) WITH (
-  'connector' = 'kafka',
-  'topic' = 'avro_topic',
-  'format' = 'avro'
+  'value.format' = 'avro-registry'
 );
 
-INSERT INTO avro_sink
-SELECT sensor_id, temperature FROM sensor_events;
+INSERT INTO sensor_events_avro
+SELECT sensor_id, temperature,ts FROM sensor_events;
 ```
 
 #### CSV → JSON
