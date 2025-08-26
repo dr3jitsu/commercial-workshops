@@ -38,12 +38,10 @@ CREATE TABLE sensor_events (
 ```
 
 ```sql
-CREATE TABLE sensor_events (
-  sensor_id STRING,
-  temperature DOUBLE,
-  ts TIMESTAMP(3),
-  WATERMARK FOR ts AS ts - INTERVAL '5' SECOND
-);
+INSERT INTO sensor_events VALUES
+  ('sensor-1', 24.5, TIMESTAMP '2025-08-26 14:00:00'),
+  ('sensor-2', 30.2, TIMESTAMP '2025-08-26 14:01:00'),
+  ('sensor-3', 28.9, TIMESTAMP '2025-08-26 14:02:00');
 ```
 
 ### 2. Insert & Select Data
