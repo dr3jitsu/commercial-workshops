@@ -152,6 +152,17 @@ WHERE JSON_QUERY(JSON_STRING(t.nested_JSON), '$[*].type') LIKE '%vibration%'
 ```
 ### 5. Deduplication
 ```sql
+INSERT INTO sensor_events VALUES
+  ('sensor-1', 24.5, TIMESTAMP '2025-08-26 14:00:00'),
+  ('sensor-2', 30.2, TIMESTAMP '2025-08-26 14:01:00'),
+  ('sensor-3', 28.9, TIMESTAMP '2025-08-26 14:02:00'),
+  -- duplicates
+  ('sensor-1', 24.5, TIMESTAMP '2025-08-26 14:00:00'),
+  ('sensor-2', 30.2, TIMESTAMP '2025-08-26 14:01:00'),
+  ('sensor-3', 28.9, TIMESTAMP '2025-08-26 14:02:00'),
+  ('sensor-2', 30.2, TIMESTAMP '2025-08-26 14:01:00');
+```
+```sql
 SELECT *
 FROM (
   SELECT *,
