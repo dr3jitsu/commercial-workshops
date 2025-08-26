@@ -41,7 +41,11 @@ CREATE TABLE sensor_events (
 INSERT INTO sensor_events VALUES
   ('sensor-1', 24.5, TIMESTAMP '2025-08-26 14:00:00'),
   ('sensor-2', 30.2, TIMESTAMP '2025-08-26 14:01:00'),
-  ('sensor-3', 28.9, TIMESTAMP '2025-08-26 14:02:00');
+  ('sensor-3', 28.9, TIMESTAMP '2025-08-26 14:02:00'),
+  ('sensor-1', 24.5, CURRENT_TIMESTAMP),
+  ('sensor-2', 30.2, CURRENT_TIMESTAMP),
+  ('sensor-3', 28.9, CURRENT_TIMESTAMP);
+
 ```
 
 ### 2. Add Primary Key & Insert Data using Select 
