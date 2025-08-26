@@ -197,6 +197,17 @@ FROM (
 WHERE rownum = 1;
 ```
 
+```sql
+CREATE TABLE sensor_events_deduped AS
+SELECT sensor_id, temperature, ts
+FROM (
+  SELECT *,
+    ROW_NUMBER() OVER (PARTITION BY sensor_id ORDER BY ts DESC) AS rownum
+  FROM sensor_events_rekeyed
+)
+WHERE rownum = 1;
+```
+
 ### 6. Data Enrichment (Join with Reference Data)
 ```sql
 SELECT e.sensor_id, e.temperature, d.location
