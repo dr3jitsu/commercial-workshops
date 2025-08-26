@@ -47,6 +47,10 @@ Design and implement **a real-time streaming pipeline** where **Flink** processe
 - Build **Flink SQL transformations** (rekey, dedupe, aggregate, join) to enrich and analyze equipment performance.
 - Connect Flink to an **AI Agent** and run real-time inference that classifies equipment health as **HEALTHY, WARNING, or CRITICAL with reasoning**.
 
+<div align="center" padding=25px>
+    <img src="images/detail.png" width=75% height=75%>
+</div>
+
 ---
 
 ## Prerequisites
