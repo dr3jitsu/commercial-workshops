@@ -268,9 +268,8 @@ CREATE TABLE serialized_avro (
   sensor_id STRING,
   temperature DOUBLE
 ) WITH (
-  'connector' = 'kafka',
-  'topic' = 'serialized_topic',
-  'format' = 'avro'
+  'connector' = 'confluent',
+  'value.format' = 'avro-registry'
 );
 ```
 
