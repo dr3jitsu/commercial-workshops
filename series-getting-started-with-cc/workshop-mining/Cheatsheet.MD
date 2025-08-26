@@ -56,6 +56,14 @@ WITH (
   'changelog.mode' = 'upsert'
 );
 ```
+```sql
+INSERT INTO sensor_events_rekeyed
+SELECT
+  sensor_id,
+  temperature,
+  ts
+FROM sensor_events;
+```
 
 ```sql
 CREATE TABLE sensor_output AS
