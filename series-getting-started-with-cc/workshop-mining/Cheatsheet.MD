@@ -179,6 +179,23 @@ FROM (
 )
 WHERE rownum = 1;
 ```
+```sql
+SELECT DISTINCT sensor_id, temperature, ts
+FROM sensor_events_rekeyed;
+
+```
+```sql
+SELECT sensor_id, temperature, ts
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER (
+           PARTITION BY sensor_id, temperature, ts
+           ORDER BY ts DESC
+         ) AS rownum
+  FROM sensor_events_rekeyed
+)
+WHERE rownum = 1;
+```
 
 ### 6. Data Enrichment (Join with Reference Data)
 ```sql
