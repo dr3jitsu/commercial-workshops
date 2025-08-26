@@ -9,7 +9,7 @@ Instead of just moving data around, you’ll see how modern platforms can react 
 Goal: Show how to design and run an intelligent, event-driven decision system by combining Kafka, Flink, and LLMs in Confluent Cloud.
 
 <div align="center" padding=25px>
-    <img src="images/detail.png" width=100% height=100%>
+    <img src="images/overview-ws.png" width=100% height=100%>
 </div>
 
 
