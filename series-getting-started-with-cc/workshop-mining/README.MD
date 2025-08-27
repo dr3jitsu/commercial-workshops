@@ -73,7 +73,7 @@ Design and implement **a real-time streaming pipeline** where **Flink** processe
 ## Step 1 — Create/Prepare Your Confluent Cloud Account
 1. Sign up and log in to **Confluent Cloud**.
 2. Open **Billing & payment** (menu at top-right).
-3. Under **Payment details & contacts**, enter promo code **`CONF`** to delay entering a credit card for 30 days (for lab purposes).
+3. Under **Payment details & contacts**, enter promo code **`POPTOUT0007SOVN`** to delay entering a credit card for 30 days (for lab purposes).
 
 > You can return to the billing UI later to add a payment method when needed.
 
@@ -664,7 +664,7 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
 You have two options:
 
 - **Option A (Lab sample):**
-  - **API Key:** `AIzaSyBidz11vgKLz_1RMgtZ0FDG1x`
+  - **API Key:** `AIzaSyBidz11vgKLz_1RMgtZ0FDG1x23SmrikgM`
   - **Gemini Endpoint:** `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`
 
 - **Option B (Use your own):**
