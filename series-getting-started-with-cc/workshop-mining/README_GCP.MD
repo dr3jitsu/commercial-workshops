@@ -695,7 +695,13 @@ You have two options:
 
 4. Example:
 ```bash
-confluent flink connection create mining-connection --cloud AWS  --region ap-southeast-1 --environment env-jwnnxq --type googleai --endpoint https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent       --api-key AIzaSyBidz11vgKLz_1RMgtZ0FDG1x23SmrikgM
+confluent flink connection create mining-connection \
+  --cloud AWS \
+  --region ap-southeast-1 \
+  --environment env-jwnnxq \
+  --type googleai \
+  --endpoint https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent \
+  --api-key AIzaSyBidz11vgKLz_1RMgtZ0FDG1x23SmrikgM
 
 ```
 > Ensure the **endpoint** matches what you noted in 8.1.
