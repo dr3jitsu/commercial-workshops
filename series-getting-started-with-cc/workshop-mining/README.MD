@@ -669,10 +669,8 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
       export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"
      ```
   3. View available Bedrock models,  
-  4. Get the Inference Profiles ID,  e.g. 
-    ```bash
-      apac.anthropic.claude-3-5-sonnet-20240620-v1:0
-     ```
+  4. Get the Inference Profiles ID,  e.g. ** apac.anthropic.claude-3-5-sonnet-20240620-v1:0**  or  ** apac.anthropic.claude-3-7-sonnet-20250219-v1:0** 
+   
 
 > **Security Tip:** Treat API keys as secrets. Prefer environment variables or secret managers in real projects.
 
