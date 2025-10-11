@@ -660,17 +660,16 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
 
 ## Step 8 — Flink Agentic AI (LLM Inference)
 
-### 8.1 Prepare LLM Access (Google AI)
-You have two options:
-
-- **Option A (Lab sample):**
-  - **API Key:** `AIzaSyBidz11vgKLz_1RMgtZ0FDG1x23SmrikgM`
-  - **Gemini Endpoint:** `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`
-
-- **Option B (Use your own):**
-  1. Go to https://aistudio.google.com → **Get API Key** → create or copy your key.
-  2. Note the **API Endpoint** (the URL before `?key=GEMINI_API_KEY`), e.g.  
-     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`
+### 8.1 Prepare LLM Access (AWS Bedrock)
+  1. Go to AWS Console → **Get AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN  ** → create or copy your key.
+  2. Set AWS environment variables (the URL before `?key=GEMINI_API_KEY`), e.g.  
+     `export AWS_ACCESS_KEY_ID="ASIAxxxxZ"
+      export AWS_SECRET_ACCESS_KEY="ShyOweP5xxxxxxxxx/Xmuj7s"
+      export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"`
+  3. Check the Bedrock model catalog for available models , e.g.  
+     `export AWS_ACCESS_KEY_ID="ASIAxxxxZ"
+      export AWS_SECRET_ACCESS_KEY="ShyOweP5xxxxxxxxx/Xmuj7s"
+      export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"`
 
 > **Security Tip:** Treat API keys as secrets. Prefer environment variables or secret managers in real projects.
 
@@ -686,18 +685,27 @@ You have two options:
    ```
 3. Create the **Flink connection** (replace placeholders with your values where needed):
    ```bash
-   confluent flink connection create mining-connection --cloud AWS 
-   --region <your flink region id> --environment <your Confluent environment id>      
-   --type googleai      
-   --endpoint https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent      
-   --api-key <your Google AI API key>
+  confluent flink connection create <connection_name> \
+  --cloud aws \
+  --region <region> \
+  --type bedrock \
+  --endpoint https://bedrock-runtime.<region>.amazonaws.com/model/apac.<modelid>/invoke \
+  --aws-access-key $AWS_ACCESS_KEY_ID \
+  --aws-secret-key $AWS_SECRET_ACCESS_KEY \
+  --aws-session-token $AWS_SESSION_TOKEN
+   ```
+4. Example:
+   ```bash
+  confluent flink connection create bedrock-connection \
+  --cloud aws \
+  --region ap-southeast-1 \
+  --type bedrock \
+  --endpoint https://bedrock-runtime.ap-southeast-1.amazonaws.com/model/apac.anthropic.claude-3-5-sonnet-20240620-v1:0/invoke \
+  --aws-access-key $AWS_ACCESS_KEY_ID \
+  --aws-secret-key $AWS_SECRET_ACCESS_KEY \
+  --aws-session-token $AWS_SESSION_TOKEN
    ```
 
-4. Example:
-```bash
-confluent flink connection create mining-connection --cloud AWS  --region ap-southeast-1 --environment env-jwnnxq --type googleai --endpoint https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent       --api-key AIzaSyBidz11vgKLz_1RMgtZ0FDG1x23SmrikgM
-
-```
 > Ensure the **endpoint** matches what you noted in 8.1.
 
 ### 8.3 Create AI Model in Flink SQL
@@ -712,29 +720,28 @@ OUTPUT (
   `assessment` VARCHAR(2147483647)
 )
 WITH (
-  'googleai.connection' = 'mining-connection',
-
-  'googleai.system_prompt' = '
-  You are an equipment performance monitoring agent.  
-  Your task is to analyze aggregated equipment data and assess the current condition of the equipment.  
+  'task' = 'text_generation',
+  'provider' = 'bedrock',
+  'bedrock.params.max_tokens' = '500',
+  'bedrock.connection' = 'bedrock-connection',
+  'bedrock.system_prompt' = '
+  You are an equipment performance monitoring agent.
+  Your task is to analyze aggregated equipment data and assess the current condition of the equipment.
 
   Consider the following factors:
-  - Average temperature (°C): high (>80) may indicate overheating.  
-  - Average vibration level: higher than 0.05 indicates potential mechanical issues.  
-  - Fuel efficiency (ore tons per fuel LPH): lower values indicate inefficiency.  
-  - Vibration alert count: frequent alerts signal a worsening condition.  
+  - Average temperature (°C): high (>80) may indicate overheating.
+  - Average vibration level: higher than 0.05 indicates potential mechanical issues.
+  - Fuel efficiency (ore tons per fuel LPH): lower values indicate inefficiency.
+  - Vibration alert count: frequent alerts signal a worsening condition.
 
-  Provide an assessment in one of these categories: HEALTHY, WARNING, CRITICAL.  
-  Always include reasoning based on the metrics provided.  
+  Provide an assessment in one of these categories: HEALTHY, WARNING, CRITICAL.
+  Always include reasoning based on the metrics provided.
 
   Output format:
-  equipment_id : {id}  
-  assessment : {HEALTHY | WARNING | CRITICAL}  
-  reasoning : {short explanation}  
-  ',
-
-  'provider' = 'googleai',
-  'task' = 'text_generation'
+  equipment_id : {id}
+  assessment : {HEALTHY | WARNING | CRITICAL}
+  reasoning : {short explanation}
+  '
 );
 
 ```
@@ -773,9 +780,11 @@ OUTPUT (
   `recommendation` VARCHAR(2147483647)
 )
 WITH (
-  'googleai.connection' = 'mining-connection',
-
-  'googleai.system_prompt' = '
+  'task' = 'text_generation',
+  'provider' = 'bedrock',
+  'bedrock.params.max_tokens' = '500',
+  'bedrock.connection' = 'bedrock-connection',
+  'bedrock.system_prompt' = '
   You are a predictive maintenance advisor for mining equipment.  
   Based on aggregated sensor and production data, recommend an action:  
 
@@ -793,10 +802,7 @@ WITH (
   equipment_id : {id}  
   recommendation : {CONTINUE OPERATION | SCHEDULE MAINTENANCE | IMMEDIATE CHECK REQUIRED}  
   reasoning : {short justification}  
-  ',
-
-  'provider' = 'googleai',
-  'task' = 'text_generation'
+  '
 );
 
 ```
