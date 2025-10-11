@@ -706,6 +706,13 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
      --aws-secret-key $AWS_SECRET_ACCESS_KEY \
      --aws-session-token $AWS_SESSION_TOKEN
    ```
+5. If you need to delete the Flink connection, run the following command:
+   ```bash
+    confluent flink connection delete bedrock-connection \
+     --cloud aws \
+     --region ap-southeast-1 \
+     --environment env-xxxx
+   ```
 
 > Ensure the **credential, model id, region id ** matches what you noted in 8.1.
 
