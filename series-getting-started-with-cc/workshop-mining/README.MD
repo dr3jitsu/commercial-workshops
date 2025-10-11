@@ -661,15 +661,19 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
 ## Step 8 — Flink Agentic AI (LLM Inference)
 
 ### 8.1 Prepare LLM Access (AWS Bedrock)
-  1. Go to AWS Console → **Get AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN  ** → create or copy your key.
-  2. Set AWS environment variables (the URL before `?key=GEMINI_API_KEY`), e.g.  
-     `export AWS_ACCESS_KEY_ID="ASIAxxxxZ"
+  1. Go to AWS Console → **Get AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN  ** 
+  2. Set AWS environment variables, e.g.  
+      ```bash
+      export AWS_ACCESS_KEY_ID="ASIAxxxxZ"
       export AWS_SECRET_ACCESS_KEY="ShyOweP5xxxxxxxxx/Xmuj7s"
-      export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"`
+      export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"
+     ```
   3. Check the Bedrock model catalog for available models , e.g.  
-     `export AWS_ACCESS_KEY_ID="ASIAxxxxZ"
+    ```bash
+      export AWS_ACCESS_KEY_ID="ASIAxxxxZ"
       export AWS_SECRET_ACCESS_KEY="ShyOweP5xxxxxxxxx/Xmuj7s"
-      export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"`
+      export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"
+     ```
 
 > **Security Tip:** Treat API keys as secrets. Prefer environment variables or secret managers in real projects.
 
