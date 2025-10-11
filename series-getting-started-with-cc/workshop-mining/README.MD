@@ -689,14 +689,14 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
    ```
 3. Create the **Flink connection** (replace placeholders with your values where needed):
    ```bash
-  confluent flink connection create <connection_name> \
-  --cloud aws \
-  --region <region> \
-  --type bedrock \
-  --endpoint https://bedrock-runtime.<region>.amazonaws.com/model/apac.<modelid>/invoke \
-  --aws-access-key $AWS_ACCESS_KEY_ID \
-  --aws-secret-key $AWS_SECRET_ACCESS_KEY \
-  --aws-session-token $AWS_SESSION_TOKEN
+   confluent flink connection create <connection_name> \
+     --cloud aws \
+     --region <region> \
+     --type bedrock \
+     --endpoint https://bedrock-runtime.<region>.amazonaws.com/model/apac.<modelid>/invoke \
+     --aws-access-key $AWS_ACCESS_KEY_ID \
+     --aws-secret-key $AWS_SECRET_ACCESS_KEY \
+     --aws-session-token $AWS_SESSION_TOKEN
    ```
 4. Example:
    ```bash
