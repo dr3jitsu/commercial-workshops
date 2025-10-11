@@ -65,7 +65,7 @@ Design and implement **a real-time streaming pipeline** where **Flink** processe
 ## Prerequisites
 - A **Confluent Cloud** account.
 - **Confluent CLI** installed.
-- Access to **Google AI (Gemini) API** (you may use the provided sample endpoint/key for the lab or your own).
+- Access to **AWS Console to get Credential for AWS Bedrock**.
 - A modern browser.
 
 ---
@@ -668,11 +668,10 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
       export AWS_SECRET_ACCESS_KEY="ShyOweP5xxxxxxxxx/Xmuj7s"
       export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"
      ```
-  3. Check the Bedrock model catalog for available models , e.g.  
+  3. View available Bedrock models,  
+  4. Get the Inference Profiles ID,  e.g. 
     ```bash
-      export AWS_ACCESS_KEY_ID="ASIAxxxxZ"
-      export AWS_SECRET_ACCESS_KEY="ShyOweP5xxxxxxxxx/Xmuj7s"
-      export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"
+      apac.anthropic.claude-3-5-sonnet-20240620-v1:0
      ```
 
 > **Security Tip:** Treat API keys as secrets. Prefer environment variables or secret managers in real projects.
@@ -693,24 +692,24 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
      --cloud aws \
      --region <region> \
      --type bedrock \
-     --endpoint https://bedrock-runtime.<region>.amazonaws.com/model/apac.<modelid>/invoke \
+     --endpoint https://bedrock-runtime.<region>.amazonaws.com/model/<inference_profiles_id>/invoke \
      --aws-access-key $AWS_ACCESS_KEY_ID \
      --aws-secret-key $AWS_SECRET_ACCESS_KEY \
      --aws-session-token $AWS_SESSION_TOKEN
    ```
-4. Example:
+4. Example **Flink connection**:
    ```bash
-  confluent flink connection create bedrock-connection \
-  --cloud aws \
-  --region ap-southeast-1 \
-  --type bedrock \
-  --endpoint https://bedrock-runtime.ap-southeast-1.amazonaws.com/model/apac.anthropic.claude-3-5-sonnet-20240620-v1:0/invoke \
-  --aws-access-key $AWS_ACCESS_KEY_ID \
-  --aws-secret-key $AWS_SECRET_ACCESS_KEY \
-  --aws-session-token $AWS_SESSION_TOKEN
+   confluent flink connection create bedrock-connection \
+     --cloud aws \
+     --region ap-southeast-1 \
+     --type bedrock \
+     --endpoint https://bedrock-runtime.ap-southeast-1.amazonaws.com/model/apac.anthropic.claude-3-5-sonnet-20240620-v1:0/invoke \
+     --aws-access-key $AWS_ACCESS_KEY_ID \
+     --aws-secret-key $AWS_SECRET_ACCESS_KEY \
+     --aws-session-token $AWS_SESSION_TOKEN
    ```
 
-> Ensure the **endpoint** matches what you noted in 8.1.
+> Ensure the **credential, model id, region id ** matches what you noted in 8.1.
 
 ### 8.3 Create AI Model in Flink SQL
 Create a model with inputs/outputs and a system prompt describing the decision logic.
