@@ -73,7 +73,7 @@ Design and implement **a real-time streaming pipeline** where **Flink** processe
 ## Step 1 — Create/Prepare Your Confluent Cloud Account
 1. Sign up and log in to **Confluent Cloud**.
 2. Open **Billing & payment** (menu at top-right).
-3. Under **Payment details & contacts**, enter promo code **`POPTOUT0007SOVN`** to delay entering a credit card for 30 days (for lab purposes).
+3. Under **Payment details & contacts**, enter promo code **`will be provided`** to skip entering a credit card for 5 days (for lab purposes).
 
 > You can return to the billing UI later to add a payment method when needed.
 
@@ -664,8 +664,8 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
   1. Go to AWS Console → **Get AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN  ** 
   2. Set AWS environment variables, e.g.  
       ```bash
-      export AWS_ACCESS_KEY_ID="ASIAxxxxZ"
-      export AWS_SECRET_ACCESS_KEY="ShyOweP5xxxxxxxxx/Xmuj7s"
+      export AWS_ACCESS_KEY_ID="AxxxAxxxxZ"
+      export AWS_SECRET_ACCESS_KEY="ShyxxxeP5xxxxxxxxx/Xmuj7s"
       export AWS_SESSION_TOKEN="Gxxxxxxxxxxxxx15"
      ```
   3. View available Bedrock models,  
