@@ -39,7 +39,7 @@ Goal: Show how to design and run an intelligent, event-driven decision system by
    - [7.6 Verify Topics and Explore Streaming Data](#76-verify-topics-and-explore-streaming-data)
    - [7.7 Enrich & Aggregate Equipment Performance](#77-enrich--aggregate-equipment-performance)
 10. [Step 8 — Flink Agentic AI (LLM Inference)](#step-8--flink-agentic-ai-llm-inference)
-    - [8.1 Prepare LLM Access (Google AI)](#81-prepare-llm-access-google-ai)
+    - [8.1 Prepare LLM Access (AWS Bedrock)](#81-prepare-llm-access-aws-bedrock)
     - [8.2 Create Model Connection via Confluent CLI](#82-create-model-connection-via-confluent-cli)
     - [8.3 Create AI Model in Flink SQL](#83-create-ai-model-in-flink-sql)
     - [8.4 Invoke the Model](#84-invoke-the-model)
