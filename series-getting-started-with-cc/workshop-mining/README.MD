@@ -73,7 +73,7 @@ Design and implement **a real-time streaming pipeline** where **Flink** processe
 ## Step 1 — Create/Prepare Your Confluent Cloud Account
 1. Sign up and log in to **Confluent Cloud**.
 2. Open **Billing & payment** (menu at top-right).
-3. Under **Payment details & contacts**, enter promo code **`will be provided`** to skip entering a credit card for 5 days (for lab purposes).
+3. Under **Payment details & contacts**, enter promo code **`POPTOUT0006JDK5`** to skip entering a credit card for 5 days (for lab purposes).
 
 > You can return to the billing UI later to add a payment method when needed.
 
