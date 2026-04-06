@@ -6,7 +6,7 @@
 
 In this hands-on workshop you will build a complete real-time banking analytics pipeline using Flink SQL on Confluent Cloud. Starting from synthetic card and ATM transactions, you will design streaming tables, detect risky customer behavior (large withdrawals, FX exposure, merchant failures), and enrich events with customer 360 and city/merchant discount campaigns.
 
-By the end of the core phases, you will have implemented end-to-end risk monitoring and promotional use cases fully in Flink SQL. In the optional advanced phases, you will persist Flink outputs into Iceberg tables via Tableflow, analyze them with DuckDB, and (optionally) generate AI-based risk summaries using AWS Bedrock.
+By the end of the core phases, you will have implemented end-to-end risk monitoring and promotional use cases fully in Flink SQL. In the optional advanced phases, you will persist Flink outputs into Iceberg tables via Tableflow, analyze them with DuckDB.
 
 ### 1.1. Scenario
 
