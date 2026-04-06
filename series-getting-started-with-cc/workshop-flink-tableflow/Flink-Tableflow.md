@@ -61,12 +61,8 @@ You will go through 5 phases:
 
 4. **Phase 4 – Flink → Tableflow → DuckDB**
 
-.
-
 - Enable Tableflow → Iceberg tables.  
   - Query with DuckDB.
-
-
 
 
 ---
