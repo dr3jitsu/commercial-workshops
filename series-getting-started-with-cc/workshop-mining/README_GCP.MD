@@ -664,7 +664,7 @@ SELECT * FROM EquipmentPerformance LIMIT 10;
 You have two options:
 
 - **Option A (Lab sample):**
-  - **API Key:** `AIzaSyA4ggpgB0zyvugMP6Dpa8RmUUQB1DUNofI`
+  - **API Key:** `AIzaSyA4ggpgB0zyvugMXXXXXXXXXXXXXXXXXXX`
   - **Gemini Endpoint:** `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`
 
 - **Option B (Use your own):**
@@ -700,7 +700,7 @@ You have two options:
     --environment env-jwnnxq \
     --type googleai \
     --endpoint https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent \
-    --api-key AIzaSyBidz11vgKLz_1RMgtZ0FDG1x23SmrikgM
+    --api-key AIzaSyBidz11vgKLz_1RMgXXXXXXXXXXXXXX
    ```
 > Ensure the **endpoint** matches what you noted in 8.1.
 
